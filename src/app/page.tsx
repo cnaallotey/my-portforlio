@@ -333,7 +333,7 @@ export default function Home() {
                   className="w-8 h-8 md:w-9 md:h-9 object-contain"
                 />
                 {/* Hover label */}
-                <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-text-primary text-black font-mono text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-text-primary text-white dark:text-black font-mono text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
                   {tech.name}
                 </span>
               </motion.div>
@@ -370,7 +370,7 @@ export default function Home() {
           initial={reduce ? { opacity: 0 } : { opacity: 0, y: 60 }}
           animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: EASE, delay: 1.3 }}
-          className="hidden lg:flex absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[42%] items-end gap-5 px-8 pointer-events-none"
+          className="hidden absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[42%] items-end gap-5 px-8 pointer-events-none"
         >
           {peekImages.map((src, i) => (
             <div
