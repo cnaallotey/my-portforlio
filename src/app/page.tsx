@@ -243,7 +243,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Hero Section — giant name + diagonal marquee ribbon */}
-      <section className="relative z-10 min-h-[100svh] flex flex-col justify-center overflow-hidden px-4">
+      <section className="relative z-10 min-h-[100svh] flex flex-col justify-center overflow-hidden mt-16 md:mt-0 px-4">
         {/* Giant name block with ribbon punched across it */}
         <div className="relative w-full flex items-center justify-center mt-16 md:mt-8">
           <motion.h1
