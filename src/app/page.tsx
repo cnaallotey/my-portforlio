@@ -974,7 +974,7 @@ export default function Home() {
                       </h3>
                     </div>
                     <span className="inline-block px-3 py-1 rounded-full bg-surface-elevated border border-border-hairline/50 font-mono text-xs text-text-muted">
-                      2022 – 2023
+                      2022 – 2025
                     </span>
                   </div>
                   <p className="text-sm text-text-muted leading-relaxed">
