@@ -111,10 +111,10 @@ export default function Home() {
   const ribbonItems = [
     "Full-Stack Web Developer",
     "5+ years shipping for the web",
-    "Developer @ Vue School",
+    "AI-powered Developer",
     "Published npm author",
     "76+ public repositories",
-    "Vue · Nuxt · React · Next.js",
+    "Vue · Nuxt · React · Next.js · TypeScript · Node.js · Laravel · Firebase · Tailwind",
     "Building AI-powered products",
     "Accra, Ghana — available remote",
     "Open to work · hireable: true",
