@@ -396,7 +396,7 @@ export default function Home() {
         className="relative z-10 py-32 md:py-48 max-w-6xl mx-auto px-6 md:px-8 overflow-hidden"
       >
         {/* Giant background typography */}
-        <div className="text-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-0">
+        <div className="!text-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-10">
           ABOUT CHARLES
         </div>
 
@@ -643,7 +643,7 @@ export default function Home() {
         className="relative z-10 py-32 md:py-48 max-w-6xl mx-auto px-6 md:px-8 overflow-hidden"
       >
         {/* Giant background typography */}
-        <div className="text-black dark:text-white text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-0">
+        <div className="!ext-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-10">
           SELECTED WORK
         </div>
 
@@ -856,7 +856,7 @@ export default function Home() {
         className="relative z-10 py-32 md:py-48 bg-surface-card/10 border-y border-border-hairline/40 overflow-hidden"
       >
         {/* Giant background typography */}
-        <div className="text-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-0">
+        <div className="!text-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-10">
           MY JOURNEY
         </div>
 
@@ -993,7 +993,7 @@ export default function Home() {
         className="relative z-10 py-32 md:py-48 max-w-6xl mx-auto px-6 md:px-8 overflow-hidden"
       >
         {/* Giant background typography */}
-        <div className="text-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-0">
+        <div className="!text-fill-watermark text-[clamp(4.5rem,14vw,13rem)] select-none pointer-events-none absolute top-4 left-0 w-full text-center leading-[0.8] tracking-[-0.045em] font-bold font-display z-10">
           GET IN TOUCH
         </div>
 
