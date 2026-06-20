@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Full-stack developer who turns ideas into polished, production-ready web products. Fluent in Vue/Nuxt, React/Next.js, Node.js, and Laravel, comfortable across the stack.",
   keywords: ["Charles Allotey", "Full Stack Developer", "Vue School", "Vue 3", "Nuxt", "React", "Next.js", "TypeScript", "Node.js", "Laravel", "Backend Developer", "Accra", "Ghana"],
   authors: [{ name: "Charles Nii Adotey Allotey" }],
+  icons: {
+    icon: "/favicon.png",
+  },
   openGraph: {
     title: "Charles Nii Adotey Allotey — Full-Stack Developer",
     description: "Full-stack developer who turns ideas into polished, production-ready web products. Fluent in Vue/Nuxt, React/Next.js, Node.js, and Laravel.",
