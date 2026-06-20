@@ -688,10 +688,10 @@ export default function Home() {
             <ProjectCard
               title="FormDrop — AI Forms"
               blurb="An AI app built with the Google Gemini API for intelligent and dynamic form handling."
-              tags={["Gemini API", "TypeScript", "AI"]}
-              image="/projects/formdrop.png"
+              tags={["Next.js", "Firebase", "Gemini API", "TypeScript", "AI"]}
+              image="/projects/formdrop2.png"
               liveLink="https://formdrop-one.vercel.app"
-              badge="Gemini API Hack"
+              badge="AI powered forms Backend"
               layout="wide"
             />
           </motion.div>
@@ -724,7 +724,7 @@ export default function Home() {
             <ProjectCard
               title="Community Chat"
               blurb="A real-time community chat application built on Nuxt, featuring live message synchronization."
-              tags={["Nuxt", "Realtime", "Vue"]}
+              tags={["Nuxt", "Socket.io", "Node.js", "Vue"]}
               image="/projects/community_chat.png"
               liveLink="https://community-chat-phi.vercel.app"
               layout="compact"
@@ -734,8 +734,8 @@ export default function Home() {
           <motion.div variants={reveal} className="md:col-span-8">
             <ProjectCard
               title="Kpashi — E-Commerce Platform"
-              blurb="A modern e-commerce admin dashboard and API. Full product/order management built as a client + backend pair."
-              tags={["Nuxt 3", "Node API", "TailwindCSS"]}
+              blurb="A modern e-commerce storefront application. Full product/order management built as a client + backend pair."
+              tags={["Nuxt 3", "Node.js", "PostgreSQL", "Resend", "TailwindCSS"]}
               image="/projects/kpashi.png"
               codeLink="https://github.com/cnaallotey"
               layout="wide"
@@ -747,10 +747,10 @@ export default function Home() {
             className="md:col-span-4 md:col-start-9 md:row-start-2"
           >
             <ProjectCard
-              title="Nouvelle Maison — Real-Estate Listings"
+              title="Luxury Real-Estate Listings Management platform"
               blurb="A luxury real-estate listings platform with an admin dashboard built on Next.js and Firebase."
               tags={["Next.js", "Firebase", "TailwindCSS"]}
-              image="/projects/nouvelle_maison.png"
+              image="/projects/nm-app.png"
               liveLink="https://nouvelle-maison-application-nu.vercel.app"
               badge="Real-Estate SaaS"
               layout="compact"
