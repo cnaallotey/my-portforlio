@@ -442,8 +442,8 @@ export default function Home() {
                   </p>
                   <p>
                     I currently work at{" "}
-                    <strong className="text-text-primary">Vue School</strong>, one of
-                    the leading platforms for learning Vue.js, where I build internal
+                    <strong className="text-text-primary">BitterBrains</strong>, one of
+                    the leading platforms for learning Vue.js and AI Driven Development, where I build internal
                     tools and applications used across the product.
                   </p>
 
@@ -726,7 +726,7 @@ export default function Home() {
               blurb="A real-time community chat application built on Nuxt, featuring live message synchronization."
               tags={["Nuxt", "Socket.io", "Node.js", "Vue"]}
               image="/projects/community_chat.png"
-              liveLink="https://community-chat-phi.vercel.app"
+              liveLink="https://community-chat-lbn6.onrender.com/"
               layout="compact"
             />
           </motion.div>
