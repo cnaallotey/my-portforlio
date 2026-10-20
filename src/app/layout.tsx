@@ -46,6 +46,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full antialiased">
+      <head>
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@300,400,500,600&f[]=satoshi@300,400,500,700&display=swap"
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-bg-base text-text-primary">
         <Providers>
           {children}
