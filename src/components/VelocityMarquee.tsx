@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import {
   motion,
   useAnimationFrame,
+  useInView,
   useMotionValue,
   useScroll,
   useSpring,
@@ -34,8 +35,11 @@ export default function VelocityMarquee({
   const skew = useTransform(smooth, [-2500, 2500], [12, -12]);
   const x = useTransform(baseX, (v) => `${wrap(-25, -50, v)}%`);
   const dir = useRef(1);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref);
 
   useAnimationFrame((_, delta) => {
+    if (!inView) return;
     let moveBy = dir.current * baseVelocity * (delta / 1000);
     if (factor.get() < 0) dir.current = -1;
     else if (factor.get() > 0) dir.current = 1;
@@ -44,7 +48,7 @@ export default function VelocityMarquee({
   });
 
   return (
-    <div className={`flex flex-nowrap overflow-hidden whitespace-nowrap ${className}`}>
+    <div ref={ref} className={`flex flex-nowrap overflow-hidden whitespace-nowrap ${className}`}>
       <motion.div className="flex flex-nowrap whitespace-nowrap" style={{ x, skewX: skew }}>
         {[0, 1, 2, 3].map((i) => (
           <span key={i} aria-hidden={i > 0} className="flex shrink-0 items-center">

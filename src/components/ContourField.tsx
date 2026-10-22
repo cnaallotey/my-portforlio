@@ -81,9 +81,8 @@ void main() {
 
   float t = uTime * 0.03;
   vec3 q = vec3(p * 1.1 + vec2(0.0, uScroll * 0.3), t);
-  float f = snoise(q) * 0.62
-          + snoise(q * 2.1 + 3.7) * 0.24
-          + snoise(q * 4.3 - 1.3) * 0.07;
+  float f = snoise(q) * 0.66
+          + snoise(q * 2.1 + 3.7) * 0.26;
 
   float d = length(p - m);
   float hill = exp(-d * d * 10.0) * uMouseStrength;
@@ -182,7 +181,7 @@ export default function ContourField() {
     };
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const dpr = 1; // thin lines read fine at 1x; 1.5x cost 2.25x the pixels
       const w = window.innerWidth, h = window.innerHeight;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -214,10 +213,27 @@ export default function ContourField() {
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
 
+    // Opaque sections (the hero liquid, the lime contact sheet and the game)
+    // hide this canvas completely, so skip drawing while they cover the screen.
+    let coverEnd = 0;
+    let coverStart = Infinity;
+    const measureCovers = () => {
+      const hero = document.querySelector("main > section") as HTMLElement | null;
+      const contact = document.getElementById("contact");
+      coverEnd = hero ? hero.offsetTop + hero.offsetHeight - window.innerHeight * 0.1 : 0;
+      coverStart = contact ? contact.offsetTop : Infinity;
+    };
+    const covered = () => window.scrollY < coverEnd || window.scrollY > coverStart;
+
     let raf = 0;
     let firstFrame = true;
+    let lastDraw = 0;
+    const FRAME = 1000 / 24; // slow drift — 24fps is indistinguishable here
     const tick = (now: number) => {
-      const dt = Math.min((now - state.last) / 1000, 0.05);
+      raf = requestAnimationFrame(tick);
+      if (now - lastDraw < FRAME) return;
+      lastDraw = now;
+      const dt = Math.min((now - state.last) / 1000, 0.1);
       state.last = now;
       state.time += dt;
 
@@ -228,12 +244,12 @@ export default function ContourField() {
       state.scroll += (window.scrollY / window.innerHeight - state.scroll) * k * 0.6;
       state.intensity += (targetIntensity() - state.intensity) * k * 0.5;
 
+      if (covered() && !firstFrame) return;
       draw();
       if (firstFrame) {
         canvas.style.opacity = "1";
         firstFrame = false;
       }
-      raf = requestAnimationFrame(tick);
     };
 
     const start = () => {
@@ -271,7 +287,11 @@ export default function ContourField() {
     }
 
     redrawRef.current = () => {};
-    window.addEventListener("resize", resize);
+    measureCovers();
+    const onResize = () => { resize(); measureCovers(); };
+    const ro = new ResizeObserver(measureCovers);
+    ro.observe(document.body);
+    window.addEventListener("resize", onResize);
     window.addEventListener("pointermove", onPointer, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
     document.addEventListener("visibilitychange", onVisibility);
@@ -279,7 +299,8 @@ export default function ContourField() {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      ro.disconnect();
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onPointer);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);

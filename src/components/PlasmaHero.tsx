@@ -53,7 +53,7 @@ float noise(vec2 p) { return snoise(p) * 0.5 + 0.5; }
 const mat2 R = mat2(0.8, 0.6, -0.6, 0.8);
 float fbm(vec2 p) {
   float v = 0.0, a = 0.5;
-  for (int i = 0; i < 4; i++) { v += a * noise(p); p = R * p * 2.02 + 1.7; a *= 0.5; }
+  for (int i = 0; i < 3; i++) { v += a * noise(p); p = R * p * 2.02 + 1.7; a *= 0.5; }
   return v;
 }
 
@@ -106,7 +106,8 @@ function compile(gl: WebGL2RenderingContext, type: number, src: string) {
   return sh;
 }
 
-const SCALE = 0.55;
+const SCALE = 0.4;
+const FRAME = 1000 / 30;
 
 export default function PlasmaHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -160,8 +161,12 @@ export default function PlasmaHero() {
 
     let raf = 0;
     let visible = true;
+    let lastDraw = 0;
     const tick = (now: number) => {
-      const dt = Math.min((now - s.last) / 1000, 0.05);
+      raf = requestAnimationFrame(tick);
+      if (now - lastDraw < FRAME) return; // 30fps cap: liquid motion is slow
+      lastDraw = now;
+      const dt = Math.min((now - s.last) / 1000, 0.1);
       s.last = now;
       s.time += dt;
       const k = 1 - Math.pow(0.002, dt);
@@ -169,7 +174,6 @@ export default function PlasmaHero() {
       s.mouse[1] += (s.target[1] - s.mouse[1]) * k;
       s.hover += (s.targetHover - s.hover) * k * 0.6;
       draw();
-      raf = requestAnimationFrame(tick);
     };
     const start = () => {
       cancelAnimationFrame(raf);

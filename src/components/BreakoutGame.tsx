@@ -122,6 +122,7 @@ export default function BreakoutGame() {
       particles = []; popups = [];
       resetBall();
       setState("playing");
+      visible = true;
       startLoop();
     };
 
@@ -247,12 +248,6 @@ export default function BreakoutGame() {
       ctx.save();
       if (shake > 0.3) ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
 
-      // grid
-      ctx.strokeStyle = "rgba(237,237,234,0.05)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H); ctx.stroke(); }
-      for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); ctx.stroke(); }
-
       // bricks
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -269,16 +264,22 @@ export default function BreakoutGame() {
         ctx.fillText(b.label, r.x + r.w / 2, r.y + r.h / 2 + bob + 0.5);
       }
 
-      // paddle
-      ctx.shadowColor = "#C8F94D";
-      ctx.shadowBlur = 24;
+      // paddle — glow faked with two translucent halos instead of shadowBlur
+      const px = paddle.x - paddle.w / 2;
+      ctx.fillStyle = "rgba(200,249,77,0.08)";
+      ctx.beginPath();
+      ctx.roundRect(px - 10, paddle.y - 10, paddle.w + 20, paddle.h + 20, 16);
+      ctx.fill();
+      ctx.fillStyle = "rgba(200,249,77,0.16)";
+      ctx.beginPath();
+      ctx.roundRect(px - 4, paddle.y - 4, paddle.w + 8, paddle.h + 8, 10);
+      ctx.fill();
       ctx.fillStyle = "#C8F94D";
       ctx.beginPath();
-      ctx.roundRect(paddle.x - paddle.w / 2, paddle.y, paddle.w, paddle.h, 6);
+      ctx.roundRect(px, paddle.y, paddle.w, paddle.h, 6);
       ctx.fill();
 
       // trail + ball
-      ctx.shadowBlur = 0;
       trail.forEach((t, i) => {
         ctx.fillStyle = `rgba(200,249,77,${(i / trail.length) * 0.35})`;
         ctx.beginPath();
@@ -286,13 +287,14 @@ export default function BreakoutGame() {
         ctx.fill();
       });
       if (state !== "lost") {
-        ctx.shadowColor = "#ffffff";
-        ctx.shadowBlur = 18;
+        ctx.fillStyle = "rgba(255,255,255,0.12)";
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r * 2.2, 0, Math.PI * 2);
+        ctx.fill();
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
       for (const p of particles) {
@@ -318,7 +320,9 @@ export default function BreakoutGame() {
       last = now;
       step(dt);
       draw();
-      raf = requestAnimationFrame(loop);
+      // Idle / game-over screens are static: stop once the last particle fades
+      const busy = state === "playing" || particles.length > 0 || popups.length > 0 || shake > 0.3;
+      if (busy && visible) raf = requestAnimationFrame(loop);
     };
     const startLoop = () => {
       cancelAnimationFrame(raf);
@@ -344,7 +348,7 @@ export default function BreakoutGame() {
 
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible) startLoop();
+      if (visible && state === "playing") startLoop();
       else stopLoop();
     });
     io.observe(wrap);
@@ -396,7 +400,7 @@ export default function BreakoutGame() {
       <div
         ref={wrapRef}
         data-cursor-hide={playing ? "" : undefined}
-        className={`relative h-[480px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0d0d10] md:h-[560px] ${
+        className={`relative h-[480px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0d0d10] bg-[linear-gradient(rgba(237,237,234,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(237,237,234,0.05)_1px,transparent_1px)] bg-[size:40px_40px] md:h-[560px] ${
           playing ? "cursor-none touch-none" : ""
         }`}
       >
@@ -410,7 +414,7 @@ export default function BreakoutGame() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.04 }}
               transition={{ duration: 0.4 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#0d0d10]/70 px-6 text-center backdrop-blur-[2px]"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#0d0d10]/75 px-6 text-center"
             >
               <p className="font-display text-4xl font-semibold uppercase leading-[0.9] tracking-[-0.04em] text-[#EDEDEA] md:text-7xl">
                 {status === "idle" && <>Break my<br /><span className="text-accent">stack.</span></>}

@@ -23,9 +23,13 @@ export default function Cursor() {
     const raf = requestAnimationFrame(() => setEnabled(true));
     document.documentElement.classList.add("has-cursor");
 
+    // Position updates are cheap motion-value writes; hover state only
+    // changes when the pointer enters a new element, so read it there.
     const onMove = (e: PointerEvent) => {
       x.set(e.clientX);
       y.set(e.clientY);
+    };
+    const onOver = (e: PointerEvent) => {
       const t = e.target as Element | null;
       setHidden(!!t?.closest?.("[data-cursor-hide]"));
       const labelled = t?.closest?.("[data-cursor]") as HTMLElement | null;
@@ -37,6 +41,7 @@ export default function Cursor() {
     const onLeave = () => setHidden(true);
 
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerover", onOver, { passive: true });
     window.addEventListener("pointerdown", onDown);
     window.addEventListener("pointerup", onUp);
     document.documentElement.addEventListener("pointerleave", onLeave);
@@ -44,6 +49,7 @@ export default function Cursor() {
       cancelAnimationFrame(raf);
       document.documentElement.classList.remove("has-cursor");
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerover", onOver);
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointerup", onUp);
       document.documentElement.removeEventListener("pointerleave", onLeave);
@@ -58,13 +64,13 @@ export default function Cursor() {
     <>
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[200] h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white mix-blend-difference"
+        className="pointer-events-none fixed left-0 top-0 z-[200] h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_0_1.5px_#0A0A0B]"
         style={{ x, y, opacity: hidden || label ? 0 : 1 }}
       />
       <motion.div
         aria-hidden
         className={`pointer-events-none fixed left-0 top-0 z-[199] flex items-center justify-center rounded-full ${
-          label ? "bg-accent" : "border border-white mix-blend-difference"
+          label ? "bg-accent" : "border border-white/80 shadow-[0_0_0_1px_rgba(10,10,11,0.35)]"
         }`}
         style={{ x: rx, y: ry, translateX: "-50%", translateY: "-50%" }}
         animate={{ width: size, height: size, opacity: hidden ? 0 : 1, scale: down ? 0.8 : 1 }}

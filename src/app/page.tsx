@@ -142,7 +142,6 @@ export default function Home() {
       <Preloader onDone={onLoaded} />
       <Cursor />
       <ContourField />
-      <div aria-hidden className="grain" />
 
       <motion.div
         aria-hidden
@@ -191,9 +190,9 @@ function Nav() {
       <motion.header
         animate={{ y: hidden ? -100 : 0 }}
         transition={{ duration: 0.6, ease: EASE }}
-        className="fixed inset-x-0 top-0 z-50 text-white mix-blend-difference"
+        className="fixed inset-x-0 top-0 z-50 text-white"
       >
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-5 md:px-10">
+        <div className="mx-3 mt-3 flex max-w-[1600px] items-center justify-between rounded-full bg-[#0A0A0B]/85 py-2 pl-5 pr-2 ring-1 ring-white/10 md:mx-auto md:mt-4 md:w-[calc(100%-3rem)]">
           <a href="#home" className="font-display text-lg font-semibold tracking-tight">
             CA<span className="text-accent">©</span>
           </a>
@@ -300,8 +299,8 @@ function Reveal({
 }) {
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 50, filter: "blur(10px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={reduce ? false : { opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-8% 0px" }}
       transition={{ duration: 1, ease: EASE, delay }}
       className={className}
@@ -394,7 +393,6 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
   const x1 = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "-30%"]);
   const x2 = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "30%"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, reduce ? 1 : 0.88]);
-  const radius = useTransform(scrollYProgress, [0, 1], ["0rem", reduce ? "0rem" : "4rem"]);
 
   const parent: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.045, delayChildren: 0.1 } } };
   const letter: Variants = {
@@ -419,8 +417,8 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
   return (
     <section ref={ref} className="relative h-[100svh] min-h-[620px]">
       <motion.div
-        style={{ scale, borderBottomLeftRadius: radius, borderBottomRightRadius: radius }}
-        className="relative h-full overflow-hidden bg-[#0A0A0B] text-[#EDEDEA]"
+        style={{ scale }}
+        className="relative h-full overflow-hidden rounded-b-[2.5rem] bg-[#0A0A0B] text-[#EDEDEA] md:rounded-b-[4rem]"
       >
         <PlasmaHero />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/70 to-transparent" />
@@ -906,7 +904,7 @@ function Contact({ reduce }: { reduce: boolean }) {
       <motion.div style={{ y }} className="mx-auto max-w-[1600px] px-5 pb-10 pt-24 md:px-10 md:pt-36">
         <SectionLabel index="05" title="Contact" light />
 
-        <h2 className="font-display text-[clamp(3.6rem,13vw,15rem)] font-semibold uppercase leading-[0.8] tracking-[-0.06em]">
+        <h2 className="font-display text-[clamp(3rem,11vw,13rem)] font-semibold uppercase leading-[0.8] tracking-[-0.06em]">
           <MaskLines
             reduce={reduce}
             lines={[
