@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import {
@@ -12,7 +12,6 @@ import {
   useScroll,
   useSpring,
   useTransform,
-  useVelocity,
   useMotionValueEvent,
   type MotionValue,
   type Variants,
@@ -501,120 +500,98 @@ function Marquees() {
   );
 }
 
-/* ───────────────────────────── Work (pinned horizontal) ───────────────────────────── */
+/* ───────────────────────────── Work (stacking cards) ───────────────────────────── */
 
-function TiltCard({ children, reduce }: { children: React.ReactNode; reduce: boolean }) {
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const srx = useSpring(rx, { stiffness: 200, damping: 18 });
-  const sry = useSpring(ry, { stiffness: 200, damping: 18 });
-  return (
-    <motion.div
-      onMouseMove={(e) => {
-        if (reduce) return;
-        const r = e.currentTarget.getBoundingClientRect();
-        ry.set(((e.clientX - r.left) / r.width - 0.5) * 14);
-        rx.set(-((e.clientY - r.top) / r.height - 0.5) * 14);
-      }}
-      onMouseLeave={() => {
-        rx.set(0);
-        ry.set(0);
-      }}
-      style={{ rotateX: srx, rotateY: sry, transformPerspective: 1200 }}
-      className="h-full"
-    >
-      {children}
-    </motion.div>
-  );
-}
+// Each card pins with CSS sticky and the next one slides over it — the
+// stacking costs nothing per frame (no scroll listeners, no springs).
+const TONES = [
+  { card: "bg-[#141416] text-[#EDEDEA]", muted: "text-white/60", chip: "bg-accent text-[#0A0A0B]", btn: "bg-accent text-[#0A0A0B]" },
+  { card: "bg-accent text-[#0A0A0B]", muted: "text-black/65", chip: "bg-[#0A0A0B] text-accent", btn: "bg-[#0A0A0B] text-accent" },
+  { card: "bg-[#6366F1] text-white", muted: "text-white/75", chip: "bg-white text-[#0A0A0B]", btn: "bg-white text-[#0A0A0B]" },
+  { card: "bg-[#EDEDEA] text-[#0A0A0B]", muted: "text-black/60", chip: "bg-[#0A0A0B] text-white", btn: "bg-[#0A0A0B] text-white" },
+  { card: "bg-[#22D3EE] text-[#0A0A0B]", muted: "text-black/65", chip: "bg-[#0A0A0B] text-[#22D3EE]", btn: "bg-[#0A0A0B] text-white" },
+  { card: "bg-[#FF6AD5] text-[#0A0A0B]", muted: "text-black/65", chip: "bg-[#0A0A0B] text-[#FF6AD5]", btn: "bg-[#0A0A0B] text-white" },
+];
 
 function Work({ reduce }: { reduce: boolean }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [distance, setDistance] = useState(0);
-
-  useLayoutEffect(() => {
-    const measure = () => {
-      if (!trackRef.current) return;
-      setDistance(Math.max(0, trackRef.current.scrollWidth - window.innerWidth));
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (trackRef.current) ro.observe(trackRef.current);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
-  const rawX = useTransform(scrollYProgress, (p) => -p * distance);
-  const x = useSpring(rawX, { stiffness: 90, damping: 22, mass: 0.4 });
-  const vel = useVelocity(x);
-  const skew = useSpring(useTransform(vel, [-3000, 3000], reduce ? [0, 0] : [-7, 7]), { stiffness: 200, damping: 30 });
-  const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
   return (
-    <section id="work" ref={sectionRef} style={{ height: `${PROJECTS.length * 60 + 100}vh` }} className="relative">
-      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden">
-        <motion.div ref={trackRef} style={{ x, skewX: skew }} className="flex items-stretch gap-6 pl-5 pr-[10vw] md:gap-10 md:pl-10">
-          {/* Intro panel */}
-          <div className="flex w-[78vw] shrink-0 flex-col justify-between py-4 md:w-[38vw]">
-            <SectionLabel index="01" title="Selected work" />
-            <h2 className="font-display text-[clamp(3.5rem,9vw,10rem)] font-semibold uppercase leading-[0.82] tracking-[-0.05em] text-text-primary">
-              <MaskLines reduce={reduce} lines={["Stuff", <span key="b" className="stroke-text">I&apos;ve</span>, "shipped."]} />
-            </h2>
-            <p className="max-w-xs text-sm text-text-muted">
-              Six favourites from 76+ public repos. Keep scrolling, the page moves sideways.
-            </p>
-          </div>
+    <section id="work" className="px-5 pb-24 pt-16 md:px-10 md:pb-40 md:pt-24">
+      <div className="mx-auto max-w-[1600px]">
+        <SectionLabel index="01" title="Selected work" />
+        <div className="mb-16 flex flex-col justify-between gap-6 md:mb-24 md:flex-row md:items-end">
+          <h2 className="font-display text-[clamp(3.5rem,10vw,11rem)] font-semibold uppercase leading-[0.82] tracking-[-0.05em] text-text-primary">
+            <MaskLines reduce={reduce} lines={["Stuff I've", <span key="b" className="stroke-text">shipped.</span>]} />
+          </h2>
+          <p className="max-w-xs font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+            Six favourites from 76+ public repos. Scroll — they stack.
+          </p>
+        </div>
 
-          {PROJECTS.map((p, i) => (
-            <div key={p.title} className="h-[68svh] w-[82vw] shrink-0 md:h-[72svh] md:w-[44vw]">
-              <TiltCard reduce={reduce}>
-                <a
+        <ul>
+          {PROJECTS.map((p, i) => {
+            const tone = TONES[i % TONES.length];
+            return (
+              <li
+                key={p.title}
+                // Stack only from md up: on phones a card is taller than the
+                // screen, and a sticky element that tall hides its own bottom.
+                className="mb-6 last:mb-0 md:sticky md:top-[var(--stack-top)] md:mb-[8vh]"
+                style={{ "--stack-top": `calc(5.5rem + ${i * 1.1}rem)` } as React.CSSProperties}
+              >
+                <motion.a
                   href={p.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-cursor="Open"
-                  className="group relative flex h-full flex-col justify-end overflow-hidden rounded-[2rem] border border-border-hairline bg-[#111113]"
+                  initial={reduce ? false : { opacity: 0, y: 60 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10% 0px" }}
+                  transition={{ duration: 0.8, ease: EASE }}
+                  className={`group grid grid-cols-1 gap-5 rounded-[2rem] p-3 shadow-[0_-24px_60px_-30px_rgba(0,0,0,0.55)] md:h-[72svh] md:grid-cols-12 md:gap-8 md:p-5 ${tone.card}`}
                 >
-                  <Image
-                    src={p.image}
-                    alt={`${p.title} screenshot`}
-                    fill
-                    sizes="(max-width: 768px) 82vw, 44vw"
-                    className="object-cover object-top transition-transform duration-[1.4s] ease-out-expo group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent transition-opacity duration-700 group-hover:opacity-80" />
-                  <span className="stroke-text-light absolute right-5 top-2 font-display text-[7rem] font-semibold leading-none md:text-[10rem]">
-                    0{i + 1}
-                  </span>
-                  <span className="absolute left-5 top-5 rounded-full bg-accent px-3 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-[#0A0A0B] md:left-7 md:top-7">
-                    {p.kind}
-                  </span>
-                  <div className="relative p-5 text-white md:p-8">
-                    <h3 className="font-display text-4xl font-semibold uppercase leading-[0.9] tracking-[-0.04em] md:text-6xl">
-                      {p.title}
-                    </h3>
-                    <p className="mt-3 max-w-md text-sm text-white/70">{p.blurb}</p>
-                    <div className="mt-5 flex items-center justify-between">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/50">{p.tags.join(" · ")}</span>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-black transition-all duration-500 ease-out-expo group-hover:rotate-45 group-hover:bg-accent">
-                        <ArrowUpRight size={20} />
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-[1.4rem] bg-black/20 md:col-span-7 md:aspect-auto">
+                    <Image
+                      src={p.image}
+                      alt={`${p.title} screenshot`}
+                      fill
+                      sizes="(max-width: 768px) 92vw, 55vw"
+                      className="object-cover object-top transition-transform duration-700 ease-out-expo group-hover:scale-105"
+                    />
+                  </div>
+
+                  <div className="flex flex-col justify-between gap-8 px-2 pb-3 md:col-span-5 md:px-2 md:py-3">
+                    <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.12em]">
+                      <span className={tone.muted}>
+                        {String(i + 1).padStart(2, "0")} / {String(PROJECTS.length).padStart(2, "0")}
+                      </span>
+                      <span className={`rounded-full px-3 py-1 text-[10px] font-medium ${tone.chip}`}>{p.kind}</span>
+                    </div>
+
+                    <div>
+                      <h3 className="font-display text-[clamp(2.6rem,5.5vw,6rem)] font-semibold uppercase leading-[0.85] tracking-[-0.045em]">
+                        {p.title}
+                      </h3>
+                      <p className={`mt-4 max-w-md text-[15px] leading-relaxed ${tone.muted}`}>{p.blurb}</p>
+                    </div>
+
+                    <div className="flex items-end justify-between gap-4">
+                      <div className="flex flex-wrap gap-2">
+                        {p.tags.map((t) => (
+                          <span key={t} className="rounded-full border border-current/25 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.08em]">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                      <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full transition-transform duration-500 ease-out-expo group-hover:rotate-45 md:h-16 md:w-16 ${tone.btn}`}>
+                        <ArrowUpRight size={22} weight="bold" />
                       </span>
                     </div>
                   </div>
-                </a>
-              </TiltCard>
-            </div>
-          ))}
-        </motion.div>
-
-        <div className="absolute inset-x-5 bottom-6 h-px bg-border-hairline md:inset-x-10">
-          <motion.div style={{ width: bar }} className="h-full bg-accent" />
-        </div>
+                </motion.a>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );
