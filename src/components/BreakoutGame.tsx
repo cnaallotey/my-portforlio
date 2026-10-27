@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LOGOS, type LogoName } from "./TechLogos";
 
 // "Break my stack" — Breakout where every brick is a tool I use.
 // Canvas 2D, frame-rate independent, sub-stepped collisions,
@@ -14,7 +15,17 @@ const WORDS = [
   "HTML", "CSS", "JS", "NPM", "SOCKET", "MYSQL", "NETLIFY", "AI",
   "WEBGL", "SCSS", "VITE", "RESEND", "ZOD", "UI", "UX", "API",
 ];
-const ROW_COLORS = ["#C8F94D", "#EDEDEA", "#6366F1", "#22D3EE", "#FF6AD5"];
+const WORD_LOGOS: Partial<Record<string, LogoName>> = {
+  VUE: "vuedotjs", NUXT: "nuxt", REACT: "react", "NEXT.JS": "nextdotjs", TS: "typescript",
+  NODE: "nodedotjs", LARAVEL: "laravel", TAILWIND: "tailwindcss", FIREBASE: "firebase",
+  POSTGRES: "postgresql", MONGO: "mongodb", GEMINI: "googlegemini", GENKIT: "kit",
+  FIGMA: "figma", GSAP: "gsap", PINIA: "pinia", EXPRESS: "express", STRAPI: "strapi",
+  VERCEL: "vercel", GIT: "git", JWT: "jsonwebtokens", CLAUDE: "claude", CURSOR: "cursor",
+  HTML: "html5", CSS: "css", JS: "javascript", NPM: "npm", SOCKET: "socketdotio",
+  MYSQL: "mysql", NETLIFY: "netlify", AI: "sparkle", WEBGL: "webgl", SCSS: "sass",
+  VITE: "vite", RESEND: "resend", ZOD: "zod",
+};
+const ROW_COLORS = ["#C8F94D", "#F0E8DA", "#E2B46C", "#E98B5A", "#C8F94D"];
 const ROWS = 5;
 const BEST_KEY = "break-my-stack-best";
 
@@ -38,6 +49,15 @@ export default function BreakoutGame() {
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return;
     const ctx = canvas.getContext("2d")!;
+    // next/font hashes family names, so read the real one off the CSS variable
+    const pixelFont = getComputedStyle(document.documentElement).getPropertyValue("--ff-pixel").trim() || "monospace";
+    const glyphs = new Map<LogoName, Path2D>();
+    const glyph = (label: string) => {
+      const name = WORD_LOGOS[label];
+      if (!name) return null;
+      if (!glyphs.has(name)) glyphs.set(name, new Path2D(LOGOS[name]));
+      return glyphs.get(name)!;
+    };
 
     let W = 0, H = 0, cols = 8;
     let state: Status = "idle";
@@ -251,50 +271,55 @@ export default function BreakoutGame() {
       // bricks
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.font = `600 ${W < 640 ? 9 : 11}px "JetBrains Mono", monospace`;
+      ctx.font = `400 ${W < 640 ? 8 : 10}px ${pixelFont}`;
       for (const b of bricks) {
         if (!b.alive) continue;
         const r = brickRect(b);
         const bob = Math.sin(time * 2 + b.col * 0.6 + b.row) * 1.5;
+        const by = Math.round(r.y + bob);
         ctx.fillStyle = b.color;
-        ctx.beginPath();
-        ctx.roundRect(r.x, r.y + bob, r.w, r.h, 6);
-        ctx.fill();
-        ctx.fillStyle = "#0A0A0B";
-        ctx.fillText(b.label, r.x + r.w / 2, r.y + r.h / 2 + bob + 0.5);
+        ctx.fillRect(r.x + 2, by, r.w - 4, r.h);
+        ctx.fillRect(r.x, by + 2, r.w, r.h - 4);
+        ctx.fillStyle = "rgba(14,12,10,0.25)";
+        ctx.fillRect(r.x + 2, by + r.h - 3, r.w - 4, 3);
+        ctx.fillStyle = "#0E0C0A";
+        // Logo + label where the bricks are wide enough, label alone on phones
+        const icon = W >= 640 ? glyph(b.label) : null;
+        if (icon) {
+          const s = 13, gap = 6;
+          const x0 = r.x + (r.w - (s + gap + ctx.measureText(b.label).width)) / 2;
+          ctx.save();
+          ctx.translate(x0, by + (r.h - s) / 2);
+          ctx.scale(s / 24, s / 24);
+          ctx.fill(icon);
+          ctx.restore();
+          ctx.textAlign = "left";
+          ctx.fillText(b.label, x0 + s + gap, by + r.h / 2);
+          ctx.textAlign = "center";
+        } else {
+          ctx.fillText(b.label, r.x + r.w / 2, by + r.h / 2);
+        }
       }
 
-      // paddle — glow faked with two translucent halos instead of shadowBlur
-      const px = paddle.x - paddle.w / 2;
-      ctx.fillStyle = "rgba(200,249,77,0.08)";
-      ctx.beginPath();
-      ctx.roundRect(px - 10, paddle.y - 10, paddle.w + 20, paddle.h + 20, 16);
-      ctx.fill();
-      ctx.fillStyle = "rgba(200,249,77,0.16)";
-      ctx.beginPath();
-      ctx.roundRect(px - 4, paddle.y - 4, paddle.w + 8, paddle.h + 8, 10);
-      ctx.fill();
+      // paddle — stepped pixel ends, glow faked with a translucent halo
+      const px = Math.round(paddle.x - paddle.w / 2);
+      ctx.fillStyle = "rgba(200,249,77,0.12)";
+      ctx.fillRect(px - 6, paddle.y - 6, paddle.w + 12, paddle.h + 12);
       ctx.fillStyle = "#C8F94D";
-      ctx.beginPath();
-      ctx.roundRect(px, paddle.y, paddle.w, paddle.h, 6);
-      ctx.fill();
+      ctx.fillRect(px + 3, paddle.y, paddle.w - 6, paddle.h);
+      ctx.fillRect(px, paddle.y + 3, paddle.w, paddle.h - 6);
 
-      // trail + ball
+      // trail + ball, all square pixels
       trail.forEach((t, i) => {
+        const s = ball.r * 2 * (i / trail.length);
         ctx.fillStyle = `rgba(200,249,77,${(i / trail.length) * 0.35})`;
-        ctx.beginPath();
-        ctx.arc(t.x, t.y, ball.r * (i / trail.length), 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(t.x - s / 2, t.y - s / 2, s, s);
       });
       if (state !== "lost") {
-        ctx.fillStyle = "rgba(255,255,255,0.12)";
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.r * 2.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle = "rgba(240,232,218,0.14)";
+        ctx.fillRect(ball.x - ball.r * 2, ball.y - ball.r * 2, ball.r * 4, ball.r * 4);
+        ctx.fillStyle = "#F0E8DA";
+        ctx.fillRect(ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2);
       }
 
       for (const p of particles) {
@@ -302,7 +327,7 @@ export default function BreakoutGame() {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
       }
-      ctx.font = `700 13px "JetBrains Mono", monospace`;
+      ctx.font = `700 12px ${pixelFont}`;
       for (const p of popups) {
         ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
@@ -383,24 +408,24 @@ export default function BreakoutGame() {
   return (
     <div className="relative">
       {/* HUD */}
-      <div className="mb-4 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.1em] text-[#85857F]">
+      <div className="mb-4 flex items-center justify-between font-pixel text-[11px] uppercase text-[#9A9286]">
         <span>
-          Score <span className="text-[#EDEDEA] tabular-nums">{String(score).padStart(4, "0")}</span>
+          Score <span className="text-cream tabular-nums">{String(score).padStart(4, "0")}</span>
         </span>
         <span className="flex items-center gap-1.5" aria-label={`${lives} lives`}>
           {[0, 1, 2].map((i) => (
-            <span key={i} className={`h-2.5 w-2.5 rounded-full transition-colors ${i < lives ? "bg-accent" : "bg-white/10"}`} />
+            <span key={i} className={`h-2.5 w-2.5 transition-colors ${i < lives ? "bg-accent" : "bg-white/10"}`} />
           ))}
         </span>
         <span>
-          Best <span className="text-[#EDEDEA] tabular-nums">{String(best).padStart(4, "0")}</span>
+          Best <span className="text-cream tabular-nums">{String(best).padStart(4, "0")}</span>
         </span>
       </div>
 
       <div
         ref={wrapRef}
         data-cursor-hide={playing ? "" : undefined}
-        className={`relative h-[480px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0d0d10] bg-[linear-gradient(rgba(237,237,234,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(237,237,234,0.05)_1px,transparent_1px)] bg-[size:40px_40px] md:h-[560px] ${
+        className={`notch notch-lg relative h-[480px] overflow-hidden bg-[#12100D] bg-[linear-gradient(rgba(240,232,218,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(240,232,218,0.05)_1px,transparent_1px)] bg-[size:40px_40px] md:h-[560px] ${
           playing ? "cursor-none touch-none" : ""
         }`}
       >
@@ -414,14 +439,14 @@ export default function BreakoutGame() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.04 }}
               transition={{ duration: 0.4 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#0d0d10]/75 px-6 text-center"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#12100D]/75 px-6 text-center"
             >
-              <p className="font-display text-4xl font-semibold uppercase leading-[0.9] tracking-[-0.04em] text-[#EDEDEA] md:text-7xl">
-                {status === "idle" && <>Break my<br /><span className="text-accent">stack.</span></>}
-                {status === "lost" && <>Game<br /><span className="text-[#FF6AD5]">over.</span></>}
-                {status === "won" && <>Stack<br /><span className="text-accent">broken!</span></>}
+              <p className="font-serif text-5xl leading-[0.9] tracking-[-0.02em] text-cream md:text-8xl">
+                {status === "idle" && <>Break my<br /><span className="italic text-accent">stack.</span></>}
+                {status === "lost" && <>Game<br /><span className="italic text-[#E98B5A]">over.</span></>}
+                {status === "won" && <>Stack<br /><span className="italic text-accent">broken!</span></>}
               </p>
-              <p className="max-w-sm text-sm text-[#85857F]">
+              <p className="max-w-sm font-mono text-sm text-[#9A9286]">
                 {status === "idle" && "Move to steer, click or press space to launch. Arrow keys work too."}
                 {status === "lost" && `You scored ${score}. The stack survives… for now.`}
                 {status === "won" && `${score} points. Now that you've broken it — let's build something.`}
@@ -430,14 +455,14 @@ export default function BreakoutGame() {
                 <button
                   onClick={() => api.current?.start()}
                   data-cursor="Play"
-                  className="rounded-full bg-accent px-7 py-3 font-mono text-xs font-medium uppercase tracking-[0.1em] text-[#0A0A0B] transition-transform hover:scale-105 active:scale-95"
+                  className="notch bg-accent px-6 py-3 font-pixel text-xs uppercase text-ink transition-transform hover:-translate-y-0.5 active:translate-y-px"
                 >
                   {status === "idle" ? "Start game" : "Play again"}
                 </button>
                 {status === "won" && (
                   <a
                     href="mailto:charlesallotey1995@gmail.com"
-                    className="rounded-full border border-white/20 px-7 py-3 font-mono text-xs uppercase tracking-[0.1em] text-[#EDEDEA] transition-colors hover:border-white"
+                    className="notch px-6 py-3 font-pixel text-xs uppercase text-cream shadow-[inset_0_0_0_2px_rgba(240,232,218,0.35)] transition-shadow hover:shadow-[inset_0_0_0_2px_#F0E8DA]"
                   >
                     Hire me
                   </a>
