@@ -25,7 +25,7 @@ const WORD_LOGOS: Partial<Record<string, LogoName>> = {
   MYSQL: "mysql", NETLIFY: "netlify", AI: "sparkle", WEBGL: "webgl", SCSS: "sass",
   VITE: "vite", RESEND: "resend", ZOD: "zod",
 };
-const ROW_COLORS = ["#C8F94D", "#F0E8DA", "#E2B46C", "#E98B5A", "#C8F94D"];
+const ROW_COLORS = ["#C8F94D", "#EDEDED", "#C9C9C5", "#A3A39F", "#C8F94D"];
 const ROWS = 5;
 const BEST_KEY = "break-my-stack-best";
 
@@ -50,7 +50,7 @@ export default function BreakoutGame() {
     if (!canvas || !wrap) return;
     const ctx = canvas.getContext("2d")!;
     // next/font hashes family names, so read the real one off the CSS variable
-    const pixelFont = getComputedStyle(document.documentElement).getPropertyValue("--ff-pixel").trim() || "monospace";
+    const monoFont = getComputedStyle(document.documentElement).getPropertyValue("--ff-mono").trim() || "monospace";
     const glyphs = new Map<LogoName, Path2D>();
     const glyph = (label: string) => {
       const name = WORD_LOGOS[label];
@@ -271,18 +271,15 @@ export default function BreakoutGame() {
       // bricks
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.font = `400 ${W < 640 ? 8 : 10}px ${pixelFont}`;
+      ctx.font = `500 ${W < 640 ? 8 : 10}px ${monoFont}`;
       for (const b of bricks) {
         if (!b.alive) continue;
         const r = brickRect(b);
         const bob = Math.sin(time * 2 + b.col * 0.6 + b.row) * 1.5;
         const by = Math.round(r.y + bob);
         ctx.fillStyle = b.color;
-        ctx.fillRect(r.x + 2, by, r.w - 4, r.h);
-        ctx.fillRect(r.x, by + 2, r.w, r.h - 4);
-        ctx.fillStyle = "rgba(14,12,10,0.25)";
-        ctx.fillRect(r.x + 2, by + r.h - 3, r.w - 4, 3);
-        ctx.fillStyle = "#0E0C0A";
+        ctx.fillRect(r.x, by, r.w, r.h);
+        ctx.fillStyle = "#0B0B0B";
         // Logo + label where the bricks are wide enough, label alone on phones
         const icon = W >= 640 ? glyph(b.label) : null;
         if (icon) {
@@ -301,25 +298,29 @@ export default function BreakoutGame() {
         }
       }
 
-      // paddle — stepped pixel ends, glow faked with a translucent halo
+      // paddle — glow faked with a translucent halo instead of shadowBlur
       const px = Math.round(paddle.x - paddle.w / 2);
       ctx.fillStyle = "rgba(200,249,77,0.12)";
       ctx.fillRect(px - 6, paddle.y - 6, paddle.w + 12, paddle.h + 12);
       ctx.fillStyle = "#C8F94D";
-      ctx.fillRect(px + 3, paddle.y, paddle.w - 6, paddle.h);
-      ctx.fillRect(px, paddle.y + 3, paddle.w, paddle.h - 6);
+      ctx.fillRect(px, paddle.y, paddle.w, paddle.h);
 
-      // trail + ball, all square pixels
+      // trail + ball
       trail.forEach((t, i) => {
-        const s = ball.r * 2 * (i / trail.length);
         ctx.fillStyle = `rgba(200,249,77,${(i / trail.length) * 0.35})`;
-        ctx.fillRect(t.x - s / 2, t.y - s / 2, s, s);
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, ball.r * (i / trail.length), 0, Math.PI * 2);
+        ctx.fill();
       });
       if (state !== "lost") {
-        ctx.fillStyle = "rgba(240,232,218,0.14)";
-        ctx.fillRect(ball.x - ball.r * 2, ball.y - ball.r * 2, ball.r * 4, ball.r * 4);
-        ctx.fillStyle = "#F0E8DA";
-        ctx.fillRect(ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2);
+        ctx.fillStyle = "rgba(237,237,237,0.14)";
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r * 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#EDEDED";
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       for (const p of particles) {
@@ -327,7 +328,7 @@ export default function BreakoutGame() {
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
       }
-      ctx.font = `700 12px ${pixelFont}`;
+      ctx.font = `600 12px ${monoFont}`;
       for (const p of popups) {
         ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
@@ -408,13 +409,13 @@ export default function BreakoutGame() {
   return (
     <div className="relative">
       {/* HUD */}
-      <div className="mb-4 flex items-center justify-between font-pixel text-[11px] uppercase text-[#9A9286]">
+      <div className="mb-4 flex items-center justify-between font-mono text-[11px] uppercase text-[#8C8C8C]">
         <span>
           Score <span className="text-cream tabular-nums">{String(score).padStart(4, "0")}</span>
         </span>
         <span className="flex items-center gap-1.5" aria-label={`${lives} lives`}>
           {[0, 1, 2].map((i) => (
-            <span key={i} className={`h-2.5 w-2.5 transition-colors ${i < lives ? "bg-accent" : "bg-white/10"}`} />
+            <span key={i} className={`h-2.5 w-2.5 rounded-full transition-colors ${i < lives ? "bg-accent" : "bg-white/10"}`} />
           ))}
         </span>
         <span>
@@ -425,7 +426,7 @@ export default function BreakoutGame() {
       <div
         ref={wrapRef}
         data-cursor-hide={playing ? "" : undefined}
-        className={`notch notch-lg relative h-[480px] overflow-hidden bg-[#12100D] bg-[linear-gradient(rgba(240,232,218,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(240,232,218,0.05)_1px,transparent_1px)] bg-[size:40px_40px] md:h-[560px] ${
+        className={`relative h-[480px] overflow-hidden border border-white/10 bg-[#111111] bg-[linear-gradient(rgba(237,237,237,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(237,237,237,0.04)_1px,transparent_1px)] bg-[size:40px_40px] md:h-[560px] ${
           playing ? "cursor-none touch-none" : ""
         }`}
       >
@@ -439,14 +440,14 @@ export default function BreakoutGame() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.04 }}
               transition={{ duration: 0.4 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#12100D]/75 px-6 text-center"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#111111]/75 px-6 text-center"
             >
-              <p className="font-serif text-5xl leading-[0.9] tracking-[-0.02em] text-cream md:text-8xl">
-                {status === "idle" && <>Break my<br /><span className="italic text-accent">stack.</span></>}
-                {status === "lost" && <>Game<br /><span className="italic text-[#E98B5A]">over.</span></>}
-                {status === "won" && <>Stack<br /><span className="italic text-accent">broken!</span></>}
+              <p className="text-5xl font-semibold leading-[0.9] tracking-[-0.06em] text-cream md:text-8xl">
+                {status === "idle" && <>Break my<br /><span className="text-accent">stack.</span></>}
+                {status === "lost" && <>Game<br /><span className="text-[#8C8C8C]">over.</span></>}
+                {status === "won" && <>Stack<br /><span className="text-accent">broken!</span></>}
               </p>
-              <p className="max-w-sm font-mono text-sm text-[#9A9286]">
+              <p className="max-w-sm text-sm text-[#8C8C8C]">
                 {status === "idle" && "Move to steer, click or press space to launch. Arrow keys work too."}
                 {status === "lost" && `You scored ${score}. The stack survives… for now.`}
                 {status === "won" && `${score} points. Now that you've broken it — let's build something.`}
@@ -455,14 +456,15 @@ export default function BreakoutGame() {
                 <button
                   onClick={() => api.current?.start()}
                   data-cursor="Play"
-                  className="notch bg-accent px-6 py-3 font-pixel text-xs uppercase text-ink transition-transform hover:-translate-y-0.5 active:translate-y-px"
+                  className="flex h-12 items-center gap-8 bg-accent px-6 font-mono text-xs font-medium uppercase text-ink transition-colors hover:bg-white"
                 >
                   {status === "idle" ? "Start game" : "Play again"}
+                  <span className="text-base leading-none">+</span>
                 </button>
                 {status === "won" && (
                   <a
                     href="mailto:charlesallotey1995@gmail.com"
-                    className="notch px-6 py-3 font-pixel text-xs uppercase text-cream shadow-[inset_0_0_0_2px_rgba(240,232,218,0.35)] transition-shadow hover:shadow-[inset_0_0_0_2px_#F0E8DA]"
+                    className="flex h-12 items-center border border-white/25 px-6 font-mono text-xs font-medium uppercase text-cream transition-colors hover:border-white"
                   >
                     Hire me
                   </a>

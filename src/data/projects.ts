@@ -1,7 +1,5 @@
-import type { IconName } from "@/components/PixelArt";
-
 export type Project = {
-  slug: IconName;
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome";
   title: string;
   kind: string;
   blurb: string;

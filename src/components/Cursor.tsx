@@ -58,25 +58,27 @@ export default function Cursor() {
 
   if (!enabled) return null;
 
-  const size = label ? 84 : hovering ? 48 : 30;
+  const size = label ? 84 : hovering ? 56 : 30;
 
+  // White + difference blending keeps the ring visible on dark and light
+  // sections alike; the label bubble opts out so it stays lime.
   return (
     <>
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[200] h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 bg-accent shadow-[0_0_0_1.5px_#0E0C0A]"
+        className="pointer-events-none fixed left-0 top-0 z-[200] h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white mix-blend-difference"
         style={{ x, y, opacity: hidden || label ? 0 : 1 }}
       />
       <motion.div
         aria-hidden
-        className={`pointer-events-none fixed left-0 top-0 z-[199] flex items-center justify-center ${
-          label ? "notch bg-accent" : "border border-cream/80 shadow-[0_0_0_1px_rgba(14,12,10,0.35)]"
+        className={`pointer-events-none fixed left-0 top-0 z-[199] flex items-center justify-center rounded-full ${
+          label ? "bg-accent" : "border border-white mix-blend-difference"
         }`}
         style={{ x: rx, y: ry, translateX: "-50%", translateY: "-50%" }}
-        animate={{ width: size, height: label ? 40 : size, opacity: hidden ? 0 : 1, scale: down ? 0.8 : 1, rotate: hovering && !label ? 45 : 0 }}
+        animate={{ width: size, height: size, opacity: hidden ? 0 : 1, scale: down ? 0.8 : 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 24 }}
       >
-        {label && <span className="font-pixel text-[11px] uppercase text-ink">{label}</span>}
+        {label && <span className="font-mono text-[11px] font-medium uppercase text-ink">{label}</span>}
       </motion.div>
     </>
   );

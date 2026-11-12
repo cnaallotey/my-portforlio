@@ -1,14 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Doto, Instrument_Serif, JetBrains_Mono, Silkscreen } from "next/font/google";
+import { Geist, Geist_Mono, Nothing_You_Could_Do } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
-// Serif for headlines, pixel face for UI labels, dot-matrix for numerals,
-// mono for body copy. Exposed as CSS variables and mapped in globals.css.
-const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--ff-serif" });
-const pixel = Silkscreen({ subsets: ["latin"], weight: ["400", "700"], variable: "--ff-pixel" });
-const dots = Doto({ subsets: ["latin"], weight: ["700", "900"], variable: "--ff-dots" });
-const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--ff-mono" });
+// Grotesk for everything, mono for labels, a handwritten face for the
+// scribbled overlays. Exposed as CSS variables and mapped in globals.css.
+const sans = Geist({ subsets: ["latin"], variable: "--ff-sans" });
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--ff-mono" });
+const script = Nothing_You_Could_Do({ subsets: ["latin"], weight: "400", variable: "--ff-script" });
 
 // Absolute base for canonical and share-image URLs
 const SITE_URL = "https://charlesallotey.clientra.tech";
@@ -37,7 +36,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0E0C0A",
+  themeColor: "#0B0B0B",
   width: "device-width",
   initialScale: 1,
 };
@@ -50,10 +49,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      className={`h-full antialiased ${serif.variable} ${pixel.variable} ${dots.variable} ${mono.variable}`}
+      className={`h-full antialiased ${sans.variable} ${mono.variable} ${script.variable}`}
     >
-      <body className="min-h-full flex flex-col bg-bg-base text-text-primary">
+      <body className="min-h-full flex flex-col bg-ink text-cream">
         <Providers>
           {children}
         </Providers>

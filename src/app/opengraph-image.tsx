@@ -1,7 +1,7 @@
 import { renderSocial } from "@/social/cards";
 
 export const alt =
-  "Charles Allotey: I build products people actually use. A retro CA-OS desktop with Clientra, FormDrop, leadOS, Notiworld, DummyPet and XOME.";
+  "Charles Allotey, full-stack developer: a greyscale portrait behind the word allotey, with the note “less talk, more shipping.”";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

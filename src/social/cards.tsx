@@ -2,13 +2,12 @@ import React from "react";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { ICONS, DOG_A } from "@/components/PixelArt";
 import { PROJECTS } from "@/data/projects";
 
-// Share images drawn as little CA-OS desktops: menu bar, a readme window
-// with the headline, the product icons and the dog. Rendered by next/og
-// (Satori), so every container is an explicit flexbox and colours are
-// literal values rather than CSS variables.
+// Share images in the site's editorial style: hairline column grid, the
+// greyscale portrait, a giant "allotey" with a handwritten lime overlay and
+// a lime action bar. Rendered by next/og (Satori), so every container is an
+// explicit flexbox and colours are literal values.
 
 export const SIZES = {
   og: { width: 1200, height: 630 },
@@ -19,144 +18,114 @@ export const SIZES = {
 export type SocialKind = keyof typeof SIZES;
 
 const SITE_HOST = "charlesallotey.clientra.tech";
-
-const SCREEN = "#12100D";
-const WIN = "#1B1814";
-const CREAM = "#F0E8DA";
-const MUTED = "#9A9286";
-const FAINT = "#4F4A42";
+const INK = "#0B0B0B";
+const CREAM = "#EDEDED";
+const MUTED = "#8C8C8C";
 const LIME = "#C8F94D";
+const LINE = "rgba(237,237,237,0.1)";
+const YEARS = `2020—${new Date().getFullYear() % 100}©`;
 
-const PALETTE: Record<string, string> = {
-  "#": CREAM,
-  w: "#2B2721",
-  "+": LIME,
-  b: "#E2B46C",
-  d: "#B07A3A",
-  k: SCREEN,
-};
+type Layout = { width: number; height: number; margin: number };
 
-const seeded = (i: number) => {
-  const x = Math.sin(i * 9301 + 49297) * 233280;
-  return x - Math.floor(x);
-};
-
-function Sprite({ rows, px }: { rows: string[]; px: number }) {
-  const w = rows[0].length;
-  const h = rows.length;
-  const rects: React.ReactNode[] = [];
-  rows.forEach((row, y) => {
-    let x = 0;
-    while (x < w) {
-      const c = row[x];
-      let run = 1;
-      while (x + run < w && row[x + run] === c) run++;
-      if (PALETTE[c]) rects.push(<rect key={`${x}-${y}`} x={x} y={y} width={run} height={1} fill={PALETTE[c]} />);
-      x += run;
-    }
-  });
-  return (
-    <svg width={w * px} height={h * px} viewBox={`0 0 ${w} ${h}`} shapeRendering="crispEdges">
-      {rects}
-    </svg>
-  );
-}
-
-function Stars({ width, height, count }: { width: number; height: number; count: number }) {
+function GridLines({ width, height, margin }: Layout) {
+  const col = (width - margin * 2) / 4;
   return (
     <>
-      {Array.from({ length: count }, (_, i) => {
-        const s = seeded(i) < 0.25 ? 3 : 2;
-        return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: Math.round(seeded(i + 300) * width),
-              top: Math.round(seeded(i + 600) * height),
-              width: s,
-              height: s,
-              backgroundColor: CREAM,
-              opacity: 0.15 + seeded(i + 900) * 0.45,
-            }}
-          />
-        );
-      })}
+      {[0, 1, 2, 3, 4].map((i) => (
+        <div key={i} style={{ position: "absolute", left: margin + col * i, top: 0, width: 1, height, backgroundColor: LINE }} />
+      ))}
     </>
   );
 }
 
-function Sparkle({ x, y, arm }: { x: number; y: number; arm: number }) {
-  return (
-    <>
-      <div style={{ position: "absolute", left: x - arm, top: y - 1, width: arm * 2 + 2, height: 2, backgroundColor: CREAM }} />
-      <div style={{ position: "absolute", left: x - 1, top: y - arm, width: 2, height: arm * 2 + 2, backgroundColor: CREAM }} />
-      <div style={{ position: "absolute", left: x - 2, top: y - 2, width: 6, height: 6, backgroundColor: CREAM }} />
-    </>
-  );
-}
+const mono = (size: number, color = MUTED): React.CSSProperties => ({
+  fontFamily: "Geist Mono",
+  fontSize: size,
+  color,
+  textTransform: "uppercase",
+  letterSpacing: size * 0.02,
+});
 
-function MenuBar({ height, fs }: { height: number; fs: number }) {
+function Logo({ size }: { size: number }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        height,
-        padding: `0 ${fs * 1.2}px`,
-        backgroundColor: WIN,
-        borderBottom: `3px solid ${CREAM}`,
-        fontFamily: "Silkscreen",
-        fontSize: fs,
-        color: CREAM,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: fs * 1.6 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: fs * 0.6 }}>
-          <div style={{ width: fs, height: fs, backgroundColor: LIME }} />
-          <span>CA-OS</span>
-        </div>
-        {["Work", "About", "Writing", "Contact"].map((m) => (
-          <span key={m} style={{ color: MUTED }}>
-            {m.toUpperCase()}
-          </span>
-        ))}
+    <div style={{ display: "flex", alignItems: "center", gap: size * 0.5 }}>
+      <div
+        style={{
+          width: size * 1.6,
+          height: size * 1.6,
+          backgroundColor: LIME,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          ...mono(size * 0.62, INK),
+        }}
+      >
+        CA
       </div>
-      <span style={{ color: LIME }}>{SITE_HOST.toUpperCase()}</span>
+      <span style={{ fontFamily: "Geist", fontSize: size * 1.15, color: CREAM, letterSpacing: -size * 0.05 }}>allotey</span>
     </div>
   );
 }
 
-function Stripes({ height }: { height: number }) {
+function TopRow({ layout, top, size }: { layout: Layout; top: number; size: number }) {
   return (
     <div
       style={{
-        flexGrow: 1,
-        height,
-        backgroundImage: `linear-gradient(to bottom, ${CREAM} 0px, ${CREAM} 2px, transparent 2px, transparent 4px)`,
-        backgroundSize: `100% 4px`,
-        opacity: 0.4,
+        position: "absolute",
+        left: layout.margin,
+        top,
+        width: layout.width - layout.margin * 2,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
-    />
+    >
+      <Logo size={size} />
+      <span style={mono(size * 0.8)}>{YEARS}</span>
+      <span style={mono(size * 0.8, LIME)}>{SITE_HOST}</span>
+    </div>
   );
 }
 
-function Window({
-  title,
-  left,
-  top,
-  width,
-  fs,
-  children,
-}: {
-  title: string;
-  left: number;
-  top: number;
-  width: number;
-  fs: number;
-  children: React.ReactNode;
-}) {
+function Wordmark({ left, top, size }: { left: number; top: number; size: number }) {
+  return (
+    <span
+      style={{
+        position: "absolute",
+        left,
+        top,
+        fontFamily: "Geist",
+        fontSize: size,
+        lineHeight: 1,
+        letterSpacing: -size * 0.075,
+        color: CREAM,
+      }}
+    >
+      allotey
+    </span>
+  );
+}
+
+function Scribble({ left, top, size, text }: { left: number; top: number; size: number; text: string }) {
+  return (
+    <span
+      style={{
+        position: "absolute",
+        left,
+        top,
+        fontFamily: "Nothing You Could Do",
+        fontSize: size,
+        color: LIME,
+        transform: "rotate(-6deg)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {text}
+    </span>
+  );
+}
+
+function ActionBar({ left, top, width, height, label }: { left: number; top: number; width: number; height: number; label: string }) {
   return (
     <div
       style={{
@@ -164,222 +133,151 @@ function Window({
         left,
         top,
         width,
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: WIN,
-        border: `3px solid ${CREAM}`,
-        boxShadow: "10px 10px 0 rgba(0,0,0,0.55)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: fs * 0.8,
-          height: fs * 2.3,
-          padding: `0 ${fs * 0.6}px`,
-          borderBottom: `3px solid ${CREAM}`,
-        }}
-      >
-        <div style={{ width: fs, height: fs, border: `3px solid ${CREAM}` }} />
-        <Stripes height={fs * 0.75} />
-        <span style={{ fontFamily: "Silkscreen", fontSize: fs, color: CREAM }}>{title}</span>
-        <Stripes height={fs * 0.75} />
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", padding: fs * 1.8 }}>{children}</div>
-    </div>
-  );
-}
-
-function Headline({ fs }: { fs: number }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "Instrument Serif",
-        fontSize: fs,
-        lineHeight: 1,
-        letterSpacing: -fs * 0.02,
-        color: CREAM,
-      }}
-    >
-      <span>I build products</span>
-      <div style={{ display: "flex" }}>
-        <span>people&nbsp;</span>
-        <span style={{ fontStyle: "italic", color: LIME }}>actually</span>
-        <span>&nbsp;use.</span>
-      </div>
-    </div>
-  );
-}
-
-function ReadmeBody({ fs, label }: { fs: number; label: number }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <span style={{ fontFamily: "Silkscreen", fontSize: label, color: MUTED, marginBottom: label * 1.4 }}>
-        CHARLES ALLOTEY · FULL-STACK DEVELOPER
-      </span>
-      <Headline fs={fs} />
-      <span style={{ fontFamily: "JetBrains Mono", fontSize: label * 1.15, color: MUTED, marginTop: label * 1.6 }}>
-        Vue School · Clientra · six products, all live
-      </span>
-    </div>
-  );
-}
-
-function Icons({
-  left,
-  top,
-  cols,
-  cell,
-  px,
-  fs,
-  rowGap,
-}: {
-  left: number;
-  top: number;
-  cols: number;
-  cell: number;
-  px: number;
-  fs: number;
-  rowGap: number;
-}) {
-  return (
-    <div style={{ position: "absolute", left, top, width: cols * cell, display: "flex", flexWrap: "wrap", rowGap }}>
-      {PROJECTS.map((p) => (
-        <div key={p.slug} style={{ width: cell, display: "flex", flexDirection: "column", alignItems: "center", gap: fs * 0.6 }}>
-          <Sprite rows={ICONS[p.slug]} px={px} />
-          <span style={{ fontFamily: "Silkscreen", fontSize: fs, color: CREAM }}>{p.title.toUpperCase()}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Shortcut({ left, top, icon, label, px, fs }: { left: number; top: number; icon: keyof typeof ICONS; label: string; px: number; fs: number }) {
-  return (
-    <div style={{ position: "absolute", left, top, display: "flex", flexDirection: "column", alignItems: "center", gap: fs * 0.6 }}>
-      <Sprite rows={ICONS[icon]} px={px} />
-      <span style={{ fontFamily: "Silkscreen", fontSize: fs, color: CREAM }}>{label}</span>
-    </div>
-  );
-}
-
-function Desktop({ width, height, children }: { width: number; height: number; children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        width,
         height,
+        backgroundColor: LIME,
         display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        backgroundColor: SCREEN,
-        backgroundImage: "radial-gradient(circle, rgba(240,232,218,0.07) 1px, transparent 1px)",
-        backgroundSize: "5px 5px",
+        alignItems: "center",
+        justifyContent: "center",
+        ...mono(height * 0.27, INK),
       }}
     >
-      <Stars width={width} height={height} count={Math.round((width * height) / 9000)} />
-      {children}
-      {/* Glass: scanlines + vignette */}
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width,
-          height,
-          backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0.22) 0px, rgba(0,0,0,0.22) 1px, transparent 1px, transparent 3px)",
-          backgroundSize: "100% 3px",
-        }}
-      />
+      <span>{label}</span>
+      <span style={{ position: "absolute", right: height * 0.45, fontSize: height * 0.42 }}>+</span>
     </div>
   );
 }
 
-function OgCard() {
-  const { width, height } = SIZES.og;
+function Portrait({ src, left, top, height, opacity }: { src: string; left: number; top: number; height: number; opacity: number }) {
+  const width = Math.round((height * 900) / 1100);
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={src} width={width} height={height} alt="" style={{ position: "absolute", left, top, opacity }} />;
+}
+
+function Canvas({ width, height, children }: { width: number; height: number; children: React.ReactNode }) {
   return (
-    <Desktop width={width} height={height}>
-      <MenuBar height={48} fs={15} />
-      <Sparkle x={1140} y={540} arm={10} />
-      <Sparkle x={30} y={480} arm={7} />
-      <Window title="README.TXT" left={56} top={96} width={790} fs={15}>
-        <ReadmeBody fs={84} label={15} />
-      </Window>
-      <Icons left={880} top={100} cols={2} cell={150} px={4} fs={13} rowGap={30} />
-      <div style={{ position: "absolute", left: 640, top: 528, display: "flex" }}>
-        <Sprite rows={DOG_A} px={4} />
+    <div style={{ width, height, display: "flex", position: "relative", backgroundColor: INK, overflow: "hidden" }}>
+      {children}
+    </div>
+  );
+}
+
+function Fade({ width, height, from }: { width: number; height: number; from: number }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 0,
+        top: height * from,
+        width,
+        height: height * (1 - from),
+        backgroundImage: `linear-gradient(to bottom, rgba(11,11,11,0), ${INK})`,
+      }}
+    />
+  );
+}
+
+function OgCard({ portrait }: { portrait: string }) {
+  const L = { ...SIZES.og, margin: 40 };
+  const col = (L.width - L.margin * 2) / 4;
+  return (
+    <Canvas width={L.width} height={L.height}>
+      <Portrait src={portrait} left={(L.width - 520) / 2} top={10} height={636} opacity={0.6} />
+      <Fade width={L.width} height={L.height} from={0.55} />
+      <GridLines {...L} />
+      <TopRow layout={L} top={30} size={20} />
+      <div style={{ position: "absolute", left: L.margin, top: 100, width: col * 3, display: "flex" }}>
+        {["Products & SaaS", "Vue · React · Node", "AI in everything"].map((t, i) => (
+          <span key={t} style={{ width: col, ...mono(13, CREAM) }}>
+            {`0${i + 1}. ${t}`}
+          </span>
+        ))}
       </div>
-      <span style={{ position: "absolute", left: 56, top: 584, fontFamily: "Silkscreen", fontSize: 12, color: FAINT }}>
-        CA-OS V2.6 · 6 APPS · ALL LIVE
+      <Wordmark left={160} top={168} size={300} />
+      <Scribble left={560} top={410} size={52} text="less talk, more shipping." />
+      <div style={{ position: "absolute", left: L.margin, top: 538, display: "flex", flexDirection: "column", gap: 6 }}>
+        <span style={mono(13, CREAM)}>Charles Allotey</span>
+        <span style={mono(13)}>Full-stack developer</span>
+      </div>
+      <ActionBar left={L.margin + col} top={530} width={col * 2} height={56} label="Start a project" />
+      <div style={{ position: "absolute", left: L.margin + col * 3, top: 524, width: col, display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+        <span style={{ fontFamily: "Geist", fontSize: 44, lineHeight: 1, letterSpacing: -2.5, color: CREAM }}>{PROJECTS.length}</span>
+        <span style={mono(12)}>Products live</span>
+      </div>
+    </Canvas>
+  );
+}
+
+// Profile photos cover the lower-left of both banners, so that corner
+// only ever holds the portrait fade and grid lines.
+function XHeader({ portrait }: { portrait: string }) {
+  const L = { ...SIZES.x, margin: 50 };
+  return (
+    <Canvas width={L.width} height={L.height}>
+      <Portrait src={portrait} left={560} top={-10} height={560} opacity={0.5} />
+      <Fade width={L.width} height={L.height} from={0.6} />
+      <GridLines {...L} />
+      <TopRow layout={L} top={28} size={18} />
+      <Wordmark left={392} top={88} size={262} />
+      <Scribble left={900} top={316} size={50} text="less talk, more shipping." />
+      <ActionBar left={400} top={414} width={350} height={50} label="Start a project" />
+      <span style={{ position: "absolute", right: L.margin, top: 432, ...mono(12) }}>
+        {PROJECTS.slice(1).map((p) => p.title).join(" · ")}
       </span>
-    </Desktop>
+    </Canvas>
   );
 }
 
-// Profile photos cover the lower-left of both banners, so the content
-// sits right of ~430px and only decoration lives on the left.
-function XHeader() {
-  const { width, height } = SIZES.x;
+function LinkedInBanner({ portrait }: { portrait: string }) {
+  const L = { ...SIZES.linkedin, margin: 50 };
+  const col = (L.width - L.margin * 2) / 4;
+  const right = L.margin + col * 3;
   return (
-    <Desktop width={width} height={height}>
-      <MenuBar height={44} fs={14} />
-      <Sparkle x={300} y={250} arm={9} />
-      <Sparkle x={1110} y={440} arm={7} />
-      <Shortcut left={60} top={84} icon="readme" label="README.TXT" px={4} fs={12} />
-      <Shortcut left={210} top={84} icon="play" label="PLAY.EXE" px={4} fs={12} />
-      <Window title="README.TXT" left={440} top={86} width={640} fs={14}>
-        <ReadmeBody fs={70} label={13} />
-      </Window>
-      <Icons left={1130} top={92} cols={3} cell={115} px={4} fs={11} rowGap={28} />
-      <div style={{ position: "absolute", left: 1210, top: 400, display: "flex" }}>
-        <Sprite rows={DOG_A} px={4} />
+    <Canvas width={L.width} height={L.height}>
+      <Portrait src={portrait} left={560} top={-6} height={440} opacity={0.5} />
+      <Fade width={L.width} height={L.height} from={0.6} />
+      <GridLines {...L} />
+      <TopRow layout={L} top={24} size={17} />
+      <Wordmark left={410} top={80} size={214} />
+      <Scribble left={690} top={262} size={38} text="less talk, more shipping." />
+      <div style={{ position: "absolute", left: right + 18, top: 96, display: "flex", flexDirection: "column", gap: 10 }}>
+        {["Products & SaaS", "Vue · React · Node", "AI in everything"].map((t, i) => (
+          <span key={t} style={mono(13, CREAM)}>
+            {`0${i + 1}. ${t}`}
+          </span>
+        ))}
       </div>
-    </Desktop>
+      <ActionBar left={right} top={300} width={col} height={50} label="Start a project" />
+    </Canvas>
   );
 }
 
-function LinkedInBanner() {
-  const { width, height } = SIZES.linkedin;
-  return (
-    <Desktop width={width} height={height}>
-      <MenuBar height={40} fs={13} />
-      <Sparkle x={330} y={190} arm={8} />
-      <Shortcut left={56} top={74} icon="readme" label="README.TXT" px={4} fs={11} />
-      <Shortcut left={196} top={74} icon="play" label="PLAY.EXE" px={4} fs={11} />
-      <Window title="README.TXT" left={440} top={64} width={620} fs={13}>
-        <ReadmeBody fs={60} label={12} />
-      </Window>
-      <Icons left={1150} top={74} cols={3} cell={128} px={4} fs={11} rowGap={20} />
-      <div style={{ position: "absolute", left: 1460, top: 328, display: "flex" }}>
-        <Sprite rows={DOG_A} px={3} />
-      </div>
-    </Desktop>
-  );
-}
+const CARDS: Record<SocialKind, (props: { portrait: string }) => React.ReactElement> = {
+  og: OgCard,
+  x: XHeader,
+  linkedin: LinkedInBanner,
+};
 
-const CARDS: Record<SocialKind, () => React.ReactElement> = { og: OgCard, x: XHeader, linkedin: LinkedInBanner };
-
-async function loadFonts() {
-  const dir = join(process.cwd(), "src/assets/fonts");
-  const font = (file: string) => readFile(join(dir, file));
-  const [serif, serifItalic, pixel, mono] = await Promise.all([
-    font("InstrumentSerif-Regular.ttf"),
-    font("InstrumentSerif-Italic.ttf"),
-    font("Silkscreen-Regular.ttf"),
-    font("JetBrainsMono-Regular.ttf"),
+async function loadAssets() {
+  const dir = join(process.cwd(), "src/assets");
+  const file = (name: string) => readFile(join(dir, name));
+  const [sans, monoFont, script, portrait] = await Promise.all([
+    file("fonts/Geist-SemiBold.ttf"),
+    file("fonts/GeistMono-Medium.ttf"),
+    file("fonts/NothingYouCouldDo-Regular.ttf"),
+    file("social-portrait.png"),
   ]);
-  return [
-    { name: "Instrument Serif", data: serif, style: "normal" as const, weight: 400 as const },
-    { name: "Instrument Serif", data: serifItalic, style: "italic" as const, weight: 400 as const },
-    { name: "Silkscreen", data: pixel, style: "normal" as const, weight: 400 as const },
-    { name: "JetBrains Mono", data: mono, style: "normal" as const, weight: 400 as const },
-  ];
+  return {
+    portrait: `data:image/png;base64,${portrait.toString("base64")}`,
+    fonts: [
+      { name: "Geist", data: sans, style: "normal" as const, weight: 600 as const },
+      { name: "Geist Mono", data: monoFont, style: "normal" as const, weight: 500 as const },
+      { name: "Nothing You Could Do", data: script, style: "normal" as const, weight: 400 as const },
+    ],
+  };
 }
 
 export async function renderSocial(kind: SocialKind) {
   const Card = CARDS[kind];
-  return new ImageResponse(<Card />, { ...SIZES[kind], fonts: await loadFonts() });
+  const { portrait, fonts } = await loadAssets();
+  return new ImageResponse(<Card portrait={portrait} />, { ...SIZES[kind], fonts });
 }
