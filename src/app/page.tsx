@@ -6,6 +6,7 @@ import {
   motion,
   animate,
   useInView,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -97,6 +98,8 @@ const SOCIALS = [
   { l: "npm", h: "https://www.npmjs.com/package/@cnaallotey/auto-form-filler" },
   { l: "Email", h: `mailto:${EMAIL}` },
 ];
+
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const monthYear = (iso: string) => {
@@ -380,12 +383,18 @@ function Menu({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
+// Appears once the hero (which has its own call to action) scrolls away
 function HirePill({ hidden }: { hidden: boolean }) {
+  const { scrollY } = useScroll();
+  const [past, setPast] = useState(false);
+  useMotionValueEvent(scrollY, "change", (y) => setPast(y > window.innerHeight * 0.8));
+
   return (
     <a
       href={`mailto:${EMAIL}`}
-      className={`fixed bottom-3 right-3 z-[60] flex h-11 items-center gap-3 bg-ink px-4 font-mono text-[11px] font-medium uppercase text-cream shadow-[0_0_0_1px_rgba(237,237,237,0.12)] transition-[opacity,background-color] duration-300 hover:bg-[#1c1c1c] md:bottom-5 md:right-5 ${
-        hidden ? "pointer-events-none opacity-0" : ""
+      tabIndex={hidden || !past ? -1 : undefined}
+      className={`fixed bottom-3 right-3 z-[60] flex h-11 items-center gap-3 bg-ink px-4 font-mono text-[11px] font-medium uppercase text-cream shadow-[0_0_0_1px_rgba(237,237,237,0.12)] transition-[opacity,transform,background-color] duration-300 hover:bg-[#1c1c1c] md:bottom-5 md:right-5 ${
+        hidden || !past ? "pointer-events-none translate-y-3 opacity-0" : ""
       }`}
     >
       <span className="pulse h-2 w-2 rounded-full bg-accent" />
@@ -550,9 +559,9 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
         </motion.div>
 
         {/* Product strip */}
-        <motion.ul {...fade(0.65)} className="grid grid-cols-3 border-t border-line md:grid-cols-6">
+        <motion.ul {...fade(0.65)} className="flex flex-wrap justify-center border-t border-line">
           {PROJECTS.map((p) => (
-            <li key={p.slug}>
+            <li key={p.slug} className="w-1/3 md:w-auto md:flex-1">
               <a
                 href={p.href}
                 target="_blank"
@@ -737,13 +746,13 @@ function Work({ reduce }: { reduce: boolean }) {
           <div className="md:sticky md:top-24">
             <Label n="02">Selected work</Label>
             <h2 className={`mt-8 ${H2}`}>
-              <MaskLines reduce={reduce} lines={["Six", "products.", <span key="c" className="text-accent">All live.</span>]} />
+              <MaskLines reduce={reduce} lines={[NUMBER_WORDS[PROJECTS.length], "products.", <span key="c" className="text-accent">All live.</span>]} />
             </h2>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted">
               Things I design, build and run under Clientra. Not mockups, not a side-project graveyard.
             </p>
             <p className="mt-14 font-mono text-[11px] font-medium uppercase">Have one in mind?</p>
-            <p className="mb-5 text-[15px] text-muted">Let&apos;s make it number seven.</p>
+            <p className="mb-5 text-[15px] text-muted">Let&apos;s make it number {NUMBER_WORDS[PROJECTS.length + 1].toLowerCase()}.</p>
             <Bar href={`mailto:${EMAIL}`} tone="lime" cursor="Write">
               Discuss your project
             </Bar>

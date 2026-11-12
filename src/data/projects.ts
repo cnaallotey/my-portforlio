@@ -1,5 +1,5 @@
 export type Project = {
-  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome";
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline";
   title: string;
   kind: string;
   blurb: string;
@@ -70,10 +70,21 @@ export const PROJECTS: Project[] = [
     title: "XOME",
     kind: "Creator marketplace",
     blurb:
-      "Escrow for brand deals. Brands lock the money upfront, creators post the content, and the cash drops the second it's approved. No ghosting, no chasing invoices.",
-    tags: ["Escrow", "Creators", "Waitlist open"],
+      "Where Ghana's brands and creators connect. Brands find creators by niche, platform and audience; creators get found and paid for what they already post, with the money held safe until the work is approved.",
+    tags: ["Creator search", "Escrow", "MoMo payouts"],
     domain: "xome.clientra.tech",
     href: "https://xome.clientra.tech/",
-    image: "/projects/xome.png",
+    image: "/projects/xome-v2.png",
+  },
+  {
+    slug: "ringline",
+    title: "Ringline",
+    kind: "Live outreach",
+    blurb:
+      "Talk to customers while they're still on your site. See who's live on your product and what they're doing, then ring them in the browser. One tap to accept, nothing to install, never recorded.",
+    tags: ["Live users", "In-browser calls", "Voice only"],
+    domain: "ringline.clientra.tech",
+    href: "https://ringline.clientra.tech/",
+    image: "/projects/ringline.png",
   },
 ];
