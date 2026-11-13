@@ -15,13 +15,13 @@ const SITE_URL = "https://charlesallotey.clientra.tech";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Charles Nii Adotey Allotey — Full-Stack Developer",
-  description: "Full-stack developer in Accra building leadOS, FormDrop, Notiworld, DummyPet, XOME and Ringline under Clientra. Fluent in Vue/Nuxt, React/Next.js, Node.js and Laravel.",
+  description: "Full-stack developer in Accra building leadOS, FormDrop, Vloid, XOME, Ringline, Notiworld and DummyPet under Clientra. Fluent in Vue/Nuxt, React/Next.js, Node.js and Laravel.",
   keywords: ["Charles Allotey", "Full Stack Developer", "Vue School", "Vue 3", "Nuxt", "React", "Next.js", "TypeScript", "Node.js", "Laravel", "Backend Developer", "Accra", "Ghana"],
   authors: [{ name: "Charles Nii Adotey Allotey" }],
   // Share images come from app/opengraph-image.tsx and app/twitter-image.tsx
   openGraph: {
     title: "Charles Nii Adotey Allotey — Full-Stack Developer",
-    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra: seven products, all live.",
+    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra: nine products, all live.",
     url: SITE_URL,
     siteName: "Charles Allotey Portfolio",
     locale: "en_US",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Charles Nii Adotey Allotey — Full-Stack Developer",
-    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra: seven products, all live.",
+    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra: nine products, all live.",
     creator: "@adotey_",
   },
 };

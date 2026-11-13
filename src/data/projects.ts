@@ -1,5 +1,5 @@
 export type Project = {
-  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline";
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "dsskincarehub";
   title: string;
   kind: string;
   blurb: string;
@@ -15,11 +15,11 @@ export const PROJECTS: Project[] = [
     title: "Clientra",
     kind: "Engineering studio",
     blurb:
-      "The studio behind everything on this page. We design, build and run production software: our own products, plus custom systems for teams who need more than a template.",
-    tags: ["Studio", "Custom software", "Accra"],
+      "Software for teams that mean business. One senior team designs, builds and runs production software, from our own products to custom systems for businesses that need more than a template.",
+    tags: ["Custom software", "AI & automation", "Payments"],
     domain: "clientra.tech",
     href: "https://clientra.tech/",
-    image: "/projects/clientra.png",
+    image: "/projects/clientra-v2.png",
   },
   {
     slug: "formdrop",
@@ -86,5 +86,27 @@ export const PROJECTS: Project[] = [
     domain: "ringline.clientra.tech",
     href: "https://ringline.clientra.tech/",
     image: "/projects/ringline.png",
+  },
+  {
+    slug: "vloid",
+    title: "Vloid",
+    kind: "AI voice outreach",
+    blurb:
+      "Stop paying people to dial down a spreadsheet. Vloid's AI voice agents call your customer list, ask what you need to know and hand back answers you can filter. In early access.",
+    tags: ["Voice agents", "Campaigns", "Early access"],
+    domain: "vloid.clientra.tech",
+    href: "https://vloid.clientra.tech/",
+    image: "/projects/vloid.png",
+  },
+  {
+    slug: "dsskincarehub",
+    title: "DS Skin Care Hub",
+    kind: "Client storefront",
+    blurb:
+      "A storefront for proper skincare in Ghana. Shoppers browse the full catalogue, get one-on-one advice on WhatsApp and pay with Mobile Money, with same-day dispatch in Accra.",
+    tags: ["E-commerce", "WhatsApp orders", "MoMo"],
+    domain: "dsskincarehub.clientra.tech",
+    href: "https://dsskincarehub.clientra.tech/",
+    image: "/projects/dsskincarehub.png",
   },
 ];

@@ -561,12 +561,12 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
         {/* Product strip */}
         <motion.ul {...fade(0.65)} className="flex flex-wrap justify-center border-t border-line">
           {PROJECTS.map((p) => (
-            <li key={p.slug} className="w-1/3 md:w-auto md:flex-1">
+            <li key={p.slug} className="w-1/3 lg:w-auto lg:flex-auto">
               <a
                 href={p.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-14 items-center justify-center gap-2 text-[15px] font-semibold tracking-[-0.03em] text-fg/70 transition-colors hover:text-accent"
+                className="flex h-14 items-center justify-center gap-2 px-2 text-center text-[15px] font-semibold leading-tight tracking-[-0.03em] text-fg/70 transition-colors hover:text-accent lg:whitespace-nowrap"
               >
                 <span className="h-1.5 w-1.5 bg-accent" />
                 {p.title}
