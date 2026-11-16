@@ -1,5 +1,5 @@
 export type Project = {
-  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "dsskincarehub";
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "dsskincarehub";
   title: string;
   kind: string;
   blurb: string;
@@ -41,18 +41,18 @@ export const PROJECTS: Project[] = [
     tags: ["CRM", "WhatsApp dialer", "MoMo invoices"],
     domain: "leados.clientra.tech",
     href: "https://leados.clientra.tech/",
-    image: "/projects/leados.png",
+    image: "/projects/leados-v2.png",
   },
   {
     slug: "notiworld",
     title: "Notiworld",
     kind: "Notifications API",
     blurb:
-      "Reach your users after they close the tab. One API call sends your web app's notifications to their desktop and phone. No email server, no SMS bills, and users keep the off switch.",
-    tags: ["API", "Desktop app", "Push"],
+      "Reach your users after they close the tab. One API call puts your web app's notifications on their desktop and phone, with buttons they can answer. No email server, no SMS bills.",
+    tags: ["API", "Actionable alerts", "Desktop & phone"],
     domain: "notiworld.clientra.tech",
     href: "https://notiworld.clientra.tech/",
-    image: "/projects/notiworld.png",
+    image: "/projects/notiworld-v2.png",
   },
   {
     slug: "dummypet",
@@ -74,7 +74,7 @@ export const PROJECTS: Project[] = [
     tags: ["Creator search", "Escrow", "MoMo payouts"],
     domain: "xome.clientra.tech",
     href: "https://xome.clientra.tech/",
-    image: "/projects/xome-v2.png",
+    image: "/projects/xome-v3.png",
   },
   {
     slug: "ringline",
@@ -85,7 +85,7 @@ export const PROJECTS: Project[] = [
     tags: ["Live users", "In-browser calls", "Voice only"],
     domain: "ringline.clientra.tech",
     href: "https://ringline.clientra.tech/",
-    image: "/projects/ringline.png",
+    image: "/projects/ringline-v2.png",
   },
   {
     slug: "vloid",
@@ -93,10 +93,21 @@ export const PROJECTS: Project[] = [
     kind: "AI voice outreach",
     blurb:
       "Stop paying people to dial down a spreadsheet. Vloid's AI voice agents call your customer list, ask what you need to know and hand back answers you can filter. In early access.",
-    tags: ["Voice agents", "Campaigns", "Early access"],
+    tags: ["Voice agents", "Campaign briefs", "Early access"],
     domain: "vloid.clientra.tech",
     href: "https://vloid.clientra.tech/",
-    image: "/projects/vloid.png",
+    image: "/projects/vloid-v2.png",
+  },
+  {
+    slug: "mailnest",
+    title: "Mailnest",
+    kind: "Open-source dev tool",
+    blurb:
+      "Send the email, see it instantly. A local SMTP server with a live inbox: run npx mailnest, point your app at localhost:1025 and every message lands in front of you, checked for what breaks in real inboxes.",
+    tags: ["Open source", "SMTP", "Email checks"],
+    domain: "cnaallotey.github.io/mailnest",
+    href: "https://cnaallotey.github.io/mailnest/",
+    image: "/projects/mailnest.png",
   },
   {
     slug: "dsskincarehub",

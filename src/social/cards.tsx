@@ -220,9 +220,18 @@ function XHeader({ portrait }: { portrait: string }) {
       <Wordmark left={392} top={88} size={262} />
       <Scribble left={900} top={316} size={50} text="less talk, more shipping." />
       <ActionBar left={400} top={414} width={350} height={50} label="Start a project" />
-      <span style={{ position: "absolute", right: L.margin, top: 432, ...mono(12) }}>
-        {PROJECTS.slice(1).map((p) => p.title).join(" · ")}
-      </span>
+      {/* Two right-aligned rows so the list never runs into the action bar */}
+      <div style={{ position: "absolute", right: L.margin, top: 418, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+        {[0, 1].map((row) => {
+          const titles = PROJECTS.slice(1).map((p) => p.title);
+          const half = Math.ceil(titles.length / 2);
+          return (
+            <span key={row} style={mono(12)}>
+              {(row === 0 ? titles.slice(0, half) : titles.slice(half)).join(" · ")}
+            </span>
+          );
+        })}
+      </div>
     </Canvas>
   );
 }

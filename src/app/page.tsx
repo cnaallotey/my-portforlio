@@ -561,12 +561,12 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
         {/* Product strip */}
         <motion.ul {...fade(0.65)} className="flex flex-wrap justify-center border-t border-line">
           {PROJECTS.map((p) => (
-            <li key={p.slug} className="w-1/3 lg:w-auto lg:flex-auto">
+            <li key={p.slug} className="w-1/2 md:w-1/5 xl:w-auto xl:flex-auto">
               <a
                 href={p.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-14 items-center justify-center gap-2 px-2 text-center text-[15px] font-semibold leading-tight tracking-[-0.03em] text-fg/70 transition-colors hover:text-accent lg:whitespace-nowrap"
+                className="flex h-14 items-center justify-center gap-2 px-2 text-center text-[15px] font-semibold leading-tight tracking-[-0.03em] text-fg/70 transition-colors hover:text-accent xl:whitespace-nowrap"
               >
                 <span className="h-1.5 w-1.5 bg-accent" />
                 {p.title}
@@ -749,7 +749,7 @@ function Work({ reduce }: { reduce: boolean }) {
               <MaskLines reduce={reduce} lines={[NUMBER_WORDS[PROJECTS.length], "products.", <span key="c" className="text-accent">All live.</span>]} />
             </h2>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted">
-              Things I design, build and run under Clientra. Not mockups, not a side-project graveyard.
+              Things I design, build and run, under Clientra and in the open. Not mockups, not a side-project graveyard.
             </p>
             <p className="mt-14 font-mono text-[11px] font-medium uppercase">Have one in mind?</p>
             <p className="mb-5 text-[15px] text-muted">Let&apos;s make it number {NUMBER_WORDS[PROJECTS.length + 1].toLowerCase()}.</p>
