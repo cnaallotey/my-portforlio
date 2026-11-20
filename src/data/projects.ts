@@ -1,5 +1,5 @@
 export type Project = {
-  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "dsskincarehub";
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "docubase" | "dsskincarehub";
   title: string;
   kind: string;
   blurb: string;
@@ -108,6 +108,17 @@ export const PROJECTS: Project[] = [
     domain: "cnaallotey.github.io/mailnest",
     href: "https://cnaallotey.github.io/mailnest/",
     image: "/projects/mailnest.png",
+  },
+  {
+    slug: "docubase",
+    title: "Docubase",
+    kind: "Docs platform",
+    blurb:
+      "Markdown in, a docs site out. One command turns a folder of Markdown into fast, searchable docs that people and coding agents can read, with Ask AI on your own key, an MCP server and drift checks in CI. Open source, MIT licensed.",
+    tags: ["Open source", "MCP server", "Offline search"],
+    domain: "docubase.clientra.tech",
+    href: "https://docubase.clientra.tech/",
+    image: "/projects/docubase.png",
   },
   {
     slug: "dsskincarehub",
