@@ -1,5 +1,5 @@
 export type Project = {
-  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "docubase" | "dsskincarehub";
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "docubase" | "autoformfiller" | "dsskincarehub";
   title: string;
   kind: string;
   blurb: string;
@@ -119,6 +119,17 @@ export const PROJECTS: Project[] = [
     domain: "docubase.clientra.tech",
     href: "https://docubase.clientra.tech/",
     image: "/projects/docubase.png",
+  },
+  {
+    slug: "autoformfiller",
+    title: "auto-form-filler",
+    kind: "Open-source library",
+    blurb:
+      "Fill any form from its link. Put values in a URL's query string and the matching fields are filled in when the page opens, for signup links, campaign links and UTM values that survive the visit. No dependencies, under 7 kB.",
+    tags: ["npm package", "Zero dependencies", "TypeScript"],
+    domain: "cnaallotey.github.io/auto-form-filler",
+    href: "https://cnaallotey.github.io/auto-form-filler/",
+    image: "/projects/auto-form-filler.png",
   },
   {
     slug: "dsskincarehub",

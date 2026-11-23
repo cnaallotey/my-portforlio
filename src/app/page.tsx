@@ -95,11 +95,13 @@ const EXPERIENCE = [
 const SOCIALS = [
   { l: "GitHub", h: "https://github.com/cnaallotey" },
   { l: "X", h: "https://x.com/adotey_" },
-  { l: "npm", h: "https://www.npmjs.com/package/@cnaallotey/auto-form-filler" },
+  { l: "npm", h: "https://www.npmjs.com/~cnaallotey" },
   { l: "Email", h: `mailto:${EMAIL}` },
 ];
 
-const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+// Spelled-out counts for the work heading; past the list, fall back to digits
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
+const numberWord = (n: number) => NUMBER_WORDS[n] ?? String(n);
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const monthYear = (iso: string) => {
@@ -523,7 +525,7 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
               </a>
             </li>
             <li>
-              <a href="https://www.npmjs.com/package/@cnaallotey/auto-form-filler" target="_blank" rel="noopener noreferrer" aria-label="npm" className="hover:text-accent">
+              <a href="https://www.npmjs.com/~cnaallotey" target="_blank" rel="noopener noreferrer" aria-label="npm" className="hover:text-accent">
                 <Logo name="npm" className="h-4 w-4" />
               </a>
             </li>
@@ -561,7 +563,7 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
         {/* Product strip */}
         <motion.ul {...fade(0.65)} className="flex flex-wrap justify-center border-t border-line">
           {PROJECTS.map((p) => (
-            <li key={p.slug} className="w-1/3 md:w-1/4 xl:w-auto xl:flex-auto">
+            <li key={p.slug} className="w-1/3 md:w-1/4 xl:w-1/6 2xl:w-auto 2xl:flex-auto">
               <a
                 href={p.href}
                 target="_blank"
@@ -746,13 +748,13 @@ function Work({ reduce }: { reduce: boolean }) {
           <div className="md:sticky md:top-24">
             <Label n="02">Selected work</Label>
             <h2 className={`mt-8 ${H2}`}>
-              <MaskLines reduce={reduce} lines={[NUMBER_WORDS[PROJECTS.length], "products.", <span key="c" className="text-accent">All live.</span>]} />
+              <MaskLines reduce={reduce} lines={[numberWord(PROJECTS.length), "products.", <span key="c" className="text-accent">All live.</span>]} />
             </h2>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted">
               Things I design, build and run, under Clientra and in the open. Not mockups, not a side-project graveyard.
             </p>
             <p className="mt-14 font-mono text-[11px] font-medium uppercase">Have one in mind?</p>
-            <p className="mb-5 text-[15px] text-muted">Let&apos;s make it number {NUMBER_WORDS[PROJECTS.length + 1].toLowerCase()}.</p>
+            <p className="mb-5 text-[15px] text-muted">Let&apos;s make it number {numberWord(PROJECTS.length + 1).toLowerCase()}.</p>
             <Bar href={`mailto:${EMAIL}`} tone="lime" cursor="Write">
               Discuss your project
             </Bar>
