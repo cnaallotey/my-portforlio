@@ -563,7 +563,7 @@ function Hero({ reduce, loaded }: { reduce: boolean; loaded: boolean }) {
         {/* Product strip */}
         <motion.ul {...fade(0.65)} className="flex flex-wrap justify-center border-t border-line">
           {PROJECTS.map((p) => (
-            <li key={p.slug} className="w-1/3 md:w-1/4 xl:w-1/6 2xl:w-auto 2xl:flex-auto">
+            <li key={p.slug} className="w-1/3 md:w-1/4 xl:w-1/7">
               <a
                 href={p.href}
                 target="_blank"
@@ -747,7 +747,8 @@ function Work({ reduce }: { reduce: boolean }) {
         <div className="py-24 md:pr-6 md:py-36">
           <div className="md:sticky md:top-24">
             <Label n="02">Selected work</Label>
-            <h2 className={`mt-8 ${H2}`}>
+            {/* The narrow tablet column would clip "products." at the usual size */}
+            <h2 className={`mt-8 ${H2} md:max-lg:text-[4.6vw]`}>
               <MaskLines reduce={reduce} lines={[numberWord(PROJECTS.length), "products.", <span key="c" className="text-accent">All live.</span>]} />
             </h2>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted">

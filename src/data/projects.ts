@@ -1,5 +1,5 @@
 export type Project = {
-  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "docubase" | "autoformfiller" | "dsskincarehub";
+  slug: "clientra" | "formdrop" | "leados" | "notiworld" | "dummypet" | "xome" | "ringline" | "vloid" | "mailnest" | "docubase" | "autoformfiller" | "glimmerui" | "dsskincarehub" | "caringhands";
   title: string;
   kind: string;
   blurb: string;
@@ -132,6 +132,17 @@ export const PROJECTS: Project[] = [
     image: "/projects/auto-form-filler.png",
   },
   {
+    slug: "glimmerui",
+    title: "Glimmer UI",
+    kind: "Open-source UI library",
+    blurb:
+      "Thirty shader effects you drop into a page. Backgrounds, image effects and tilting cards as ordinary components for React, Vue and Nuxt, all sharing one WebGL context, with CSS fallbacks and reduced motion built in.",
+    tags: ["WebGL", "React, Vue & Nuxt", "npm package"],
+    domain: "cnaallotey.github.io/glimmerui",
+    href: "https://cnaallotey.github.io/glimmerui/",
+    image: "/projects/glimmerui.png",
+  },
+  {
     slug: "dsskincarehub",
     title: "DS Skin Care Hub",
     kind: "Client storefront",
@@ -141,5 +152,16 @@ export const PROJECTS: Project[] = [
     domain: "dsskincarehub.clientra.tech",
     href: "https://dsskincarehub.clientra.tech/",
     image: "/projects/dsskincarehub.png",
+  },
+  {
+    slug: "caringhands",
+    title: "Caring Hands",
+    kind: "Client website",
+    blurb:
+      "Home and hospital nursing across Ghana, easy to ask for. Families browse nine care services, choose a shift and request a nurse online, on WhatsApp or by phone, at any hour.",
+    tags: ["Healthcare", "Nurse requests", "WhatsApp"],
+    domain: "caringhandshomenursing.org",
+    href: "https://caringhandshomenursing.org/",
+    image: "/projects/caringhands.png",
   },
 ];

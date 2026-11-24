@@ -15,13 +15,13 @@ const SITE_URL = "https://charlesallotey.clientra.tech";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Charles Nii Adotey Allotey — Full-Stack Developer",
-  description: "Full-stack developer in Accra building leadOS, FormDrop, Vloid, XOME, Ringline, Notiworld, DummyPet and Docubase, plus open-source tools like Mailnest and auto-form-filler. Fluent in Vue/Nuxt, React/Next.js, Node.js and Laravel.",
+  description: "Full-stack developer in Accra building leadOS, FormDrop, Vloid, XOME, Ringline, Notiworld, DummyPet and Docubase, plus open-source tools like Mailnest, Glimmer UI and auto-form-filler. Fluent in Vue/Nuxt, React/Next.js, Node.js and Laravel.",
   keywords: ["Charles Allotey", "Full Stack Developer", "Vue School", "Vue 3", "Nuxt", "React", "Next.js", "TypeScript", "Node.js", "Laravel", "Backend Developer", "Accra", "Ghana"],
   authors: [{ name: "Charles Nii Adotey Allotey" }],
   // Share images come from app/opengraph-image.tsx and app/twitter-image.tsx
   openGraph: {
     title: "Charles Nii Adotey Allotey — Full-Stack Developer",
-    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra and a few open-source tools: twelve products, all live.",
+    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra and a few open-source tools: fourteen products, all live.",
     url: SITE_URL,
     siteName: "Charles Allotey Portfolio",
     locale: "en_US",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Charles Nii Adotey Allotey — Full-Stack Developer",
-    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra and a few open-source tools: twelve products, all live.",
+    description: "I build products people actually use. Full-stack developer at Vue School and the builder behind Clientra and a few open-source tools: fourteen products, all live.",
     creator: "@adotey_",
   },
 };
